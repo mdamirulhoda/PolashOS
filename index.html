@@ -2,86 +2,145 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>PolashOS</title>
+    <title>PolashOS</title>
 
-  <meta name="description" content="PolashOS - The Real Browser Based Desktop Environment">
+    <meta name="description" content="PolashOS - A Real Browser Operating System">
 
-  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- Background -->
-  <div id="background"></div>
+    <!-- ========================= -->
+    <!-- Genesis Boot -->
+    <!-- ========================= -->
 
-  <!-- Boot Screen -->
-  <div id="boot-screen">
+    <div id="boot-screen">
 
-    <div class="boot-content">
+        <div class="boot-content">
 
-      <h1 class="boot-logo">
-        PolashOS
-      </h1>
+            <h1 class="boot-logo">PolashOS</h1>
 
-      <p class="boot-status">
-        Initializing Polaris Engine...
-      </p>
+            <p class="boot-status">
+                Initializing Polaris Engine...
+            </p>
 
-      <div class="boot-loader">
-        <div class="boot-progress"></div>
-      </div>
+            <div class="boot-loader">
+                <div class="boot-progress"></div>
+            </div>
+
+        </div>
 
     </div>
 
-  </div>
+    <!-- ========================= -->
+    <!-- Lock Screen -->
+    <!-- ========================= -->
 
-  <!-- Main App -->
-  <main id="app">
+    <section id="lock-screen" hidden>
 
-    <!-- Navigation -->
-    <header class="navbar">
+        <div class="lock-content">
 
-      <div class="logo">
-        PolashOS
-      </div>
+            <h2>PolashOS</h2>
 
-      <nav>
+            <p>Welcome Back</p>
 
-        <a href="#">Home</a>
+            <button id="unlockBtn">
+                Unlock
+            </button>
 
-        <a href="#">Features</a>
-
-        <a href="#">Roadmap</a>
-
-        <a href="#">GitHub</a>
-
-      </nav>
-
-    </header>
-
-    <!-- Hero -->
-    <section class="hero">
-
-      <h1>
-        PolashOS
-      </h1>
-
-      <p>
-        The Real Browser-Based Desktop Environment
-      </p>
-
-      <button id="launchBtn">
-        Launch PolashOS
-      </button>
+        </div>
 
     </section>
 
-  </main>
+    <!-- ========================= -->
+    <!-- Aurora Desktop -->
+    <!-- ========================= -->
 
-  <script src="script.js"></script>
+    <main id="desktop">
+
+        <!-- Desktop Icons -->
+
+        <div id="desktop-icons">
+
+            <div class="desktop-icon">
+                🌐
+                <span>Polaris Browser</span>
+            </div>
+
+            <div class="desktop-icon">
+                📁
+                <span>Atlas Files</span>
+            </div>
+
+            <div class="desktop-icon">
+                💻
+                <span>Nova Terminal</span>
+            </div>
+
+            <div class="desktop-icon">
+                ⚙️
+                <span>Control Center</span>
+            </div>
+
+        </div>
+
+        <!-- Windows -->
+
+        <section id="windows"></section>
+
+        <!-- Taskbar -->
+
+        <footer id="taskbar">
+
+            <div id="start-button">
+                ⊞
+            </div>
+
+            <div id="taskbar-apps"></div>
+
+            <div id="system-tray">
+
+                <span>📶</span>
+
+                <span>🔊</span>
+
+                <span id="clock">
+                    00:00
+                </span>
+
+            </div>
+
+        </footer>
+
+    </main>
+
+    <!-- ========================= -->
+    <!-- Start Menu -->
+    <!-- ========================= -->
+
+    <aside id="start-menu" hidden>
+
+        <h3>PolashOS</h3>
+
+        <ul>
+
+            <li>🌐 Polaris Browser</li>
+
+            <li>📁 Atlas Files</li>
+
+            <li>💻 Nova Terminal</li>
+
+            <li>⚙️ Control Center</li>
+
+        </ul>
+
+    </aside>
+
+    <script src="script.js"></script>
 
 </body>
 
