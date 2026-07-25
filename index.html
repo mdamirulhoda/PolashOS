@@ -1,75 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PolashOS</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+  <title>PolashOS</title>
 
-body{
-background:#0d1117;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-text-align:center;
-}
+  <meta name="description" content="PolashOS - The Real Browser Based Desktop Environment">
 
-.container{
-max-width:700px;
-padding:20px;
-}
-
-h1{
-font-size:60px;
-color:#58a6ff;
-margin-bottom:20px;
-}
-
-p{
-font-size:22px;
-margin-bottom:30px;
-color:#c9d1d9;
-}
-
-button{
-padding:15px 35px;
-font-size:20px;
-border:none;
-border-radius:8px;
-background:#238636;
-color:white;
-cursor:pointer;
-}
-
-button:hover{
-background:#2ea043;
-}
-</style>
-
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="container">
-<h1>PolashOS</h1>
+  <!-- Background -->
+  <div id="background"></div>
 
-<p>
-The world's most realistic browser-based Web Operating System.
-</p>
+  <!-- Main App -->
+  <main id="app">
 
-<button onclick="alert('Welcome to PolashOS!')">
-Launch PolashOS
-</button>
+    <!-- Navigation -->
+    <header class="navbar">
 
-</div>
+      <div class="logo">
+        PolashOS
+      </div>
+
+      <nav>
+
+        <a href="#">Home</a>
+
+        <a href="#">Features</a>
+
+        <a href="#">Roadmap</a>
+
+        <a href="#">GitHub</a>
+
+      </nav>
+
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+
+      <h1>
+        PolashOS
+      </h1>
+
+      <p>
+        The Real Browser-Based Desktop Environment
+      </p>
+
+      <button id="launchBtn">
+
+        Launch PolashOS
+
+      </button>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
 
 </body>
+
 </html>
