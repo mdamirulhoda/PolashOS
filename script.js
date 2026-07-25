@@ -17,3 +17,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+
+// ===========================
+// Boot Screen Animation
+// ===========================
+
+window.addEventListener("load", () => {
+
+    const progress = document.querySelector(".boot-progress");
+    const bootScreen = document.getElementById("boot-screen");
+
+    if (!progress || !bootScreen) return;
+
+    // Start loading bar
+    progress.style.width = "100%";
+
+    // Hide boot screen after loading
+    setTimeout(() => {
+
+        bootScreen.style.opacity = "0";
+
+        setTimeout(() => {
+            bootScreen.style.display = "none";
+        }, 800);
+
+    }, 2500);
+
+});
