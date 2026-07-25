@@ -1,47 +1,106 @@
+/* ==========================================
+   PolashOS - Core Script v1
+   ========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    const button = document.getElementById("launchBtn");
+    /* ==========================
+       Elements
+    ========================== */
 
-    button.addEventListener("click", () => {
+    const bootScreen = document.getElementById("boot-screen");
+    const bootProgress = document.querySelector(".boot-progress");
 
-        button.innerText = "Initializing Polaris Engine...";
+    const lockScreen = document.getElementById("lock-screen");
+    const unlockBtn = document.getElementById("unlockBtn");
 
-        button.disabled = true;
+    const desktop = document.getElementById("desktop");
+
+    const startButton = document.getElementById("start-button");
+    const startMenu = document.getElementById("start-menu");
+
+    const clock = document.getElementById("clock");
+
+    /* ==========================
+       Initial State
+    ========================== */
+
+    desktop.style.display = "none";
+
+    lockScreen.hidden = true;
+
+    startMenu.hidden = true;
+
+    /* ==========================
+       Boot Process
+    ========================== */
+
+    function bootSystem() {
+
+        bootProgress.style.width = "100%";
 
         setTimeout(() => {
 
-            button.innerText = "Boot Experience Coming Soon 🚀";
+            bootScreen.style.opacity = "0";
 
-        }, 1800);
+            setTimeout(() => {
+
+                bootScreen.style.display = "none";
+
+                lockScreen.hidden = false;
+
+            }, 800);
+
+        }, 2500);
+
+    }
+
+    /* ==========================
+       Unlock
+    ========================== */
+
+    unlockBtn.addEventListener("click", () => {
+
+        lockScreen.style.display = "none";
+
+        desktop.style.display = "block";
 
     });
 
-});
+    /* ==========================
+       Start Menu
+    ========================== */
 
+    startButton.addEventListener("click", () => {
 
-// ===========================
-// Boot Screen Animation
-// ===========================
+        startMenu.hidden = !startMenu.hidden;
 
-window.addEventListener("load", () => {
+    });
 
-    const progress = document.querySelector(".boot-progress");
-    const bootScreen = document.getElementById("boot-screen");
+    /* ==========================
+       Live Clock
+    ========================== */
 
-    if (!progress || !bootScreen) return;
+    function updateClock() {
 
-    // Start loading bar
-    progress.style.width = "100%";
+        const now = new Date();
 
-    // Hide boot screen after loading
-    setTimeout(() => {
+        const hours = String(now.getHours()).padStart(2, "0");
 
-        bootScreen.style.opacity = "0";
+        const minutes = String(now.getMinutes()).padStart(2, "0");
 
-        setTimeout(() => {
-            bootScreen.style.display = "none";
-        }, 800);
+        clock.textContent = `${hours}:${minutes}`;
 
-    }, 2500);
+    }
+
+    updateClock();
+
+    setInterval(updateClock, 1000);
+
+    /* ==========================
+       Boot Start
+    ========================== */
+
+    bootSystem();
 
 });
