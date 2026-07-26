@@ -439,3 +439,130 @@ button{
     }
 
 }
+@media(max-width:768px){
+
+    #desktop-icons{
+
+        flex-direction:row;
+
+        flex-wrap:wrap;
+
+    }
+
+    #start-menu{
+
+        width:90%;
+
+        left:5%;
+
+    }
+
+}
+
+/* ==========================================
+   Application Window
+========================================== */
+
+.window{
+
+    position:absolute;
+
+    top:90px;
+    left:160px;
+
+    width:720px;
+    max-width:90%;
+
+    background:rgba(20,24,38,.88);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+
+    pointer-events:auto;
+
+}
+
+.window-titlebar{
+
+    height:52px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 18px;
+
+    background:rgba(255,255,255,.05);
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    user-select:none;
+
+}
+
+.window-titlebar span{
+
+    font-weight:600;
+
+}
+
+.window-titlebar button{
+
+    width:36px;
+
+    height:36px;
+
+    padding:0;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:transparent;
+
+    color:#ffffff;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    transition:.2s;
+
+}
+
+.window-titlebar button:hover{
+
+    background:#ef4444;
+
+}
+
+.window-content{
+
+    padding:28px;
+
+    min-height:320px;
+
+}
+
+.window-content h2{
+
+    margin-bottom:15px;
+
+}
+
+.window-content p{
+
+    color:var(--muted);
+
+    line-height:1.7;
+
+}
