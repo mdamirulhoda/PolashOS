@@ -1,31 +1,48 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
     <title>PolashOS Window Test</title>
 
     <link rel="stylesheet" href="core/window-manager/window.css">
+
 </head>
+
 
 <body>
 
 
 <div id="testWindow" class="polash-window">
 
+
     <div class="polash-titlebar">
 
-        <span>PolashOS App</span>
+        <span class="window-title">
+            PolashOS App
+        </span>
+
 
         <div class="window-controls">
 
-            <div class="window-btn window-minimize"></div>
 
-            <div class="window-btn window-maximize"></div>
+            <button class="window-btn window-minimize">
+            </button>
 
-            <div class="window-btn window-close"></div>
+
+            <button class="window-btn window-maximize">
+            </button>
+
+
+            <button class="window-btn window-close">
+            </button>
+
 
         </div>
 
+
     </div>
+
 
 
     <div class="polash-content">
@@ -38,7 +55,9 @@
 </div>
 
 
+
 <script src="core/window-manager/window.js"></script>
+
 
 <script>
 
@@ -49,5 +68,7 @@ windowManager.open("testWindow");
 </script>
 
 
+
 </body>
+
 </html>
