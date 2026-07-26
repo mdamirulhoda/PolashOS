@@ -3,26 +3,29 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>PolashOS</title>
+    <title>PolashOS</title>
 
-<meta name="description" content="PolashOS - A Real Browser Operating System">
+    <meta name="description"
+          content="PolashOS - A Real Browser Operating System">
 
-<link rel="stylesheet" href="style.css">
+    <meta name="theme-color"
+          content="#050816">
+
+    <link rel="stylesheet"
+          href="style.css">
 
 </head>
 
-
 <body>
 
-
-<!-- ========================= -->
-<!-- Genesis Boot -->
-<!-- ========================= -->
-
+<!-- ==========================================
+     Genesis Boot
+========================================== -->
 
 <div id="boot-screen">
 
@@ -32,11 +35,9 @@
             PolashOS
         </h1>
 
-
         <p class="boot-status">
             Initializing Polaris Engine...
         </p>
-
 
         <div class="boot-loader">
 
@@ -44,448 +45,273 @@
 
         </div>
 
-
     </div>
 
 </div>
 
-
-
-
-
-<!-- ========================= -->
-<!-- Lock Screen -->
-<!-- ========================= -->
-
+<!-- ==========================================
+     Lock Screen
+========================================== -->
 
 <section id="lock-screen" hidden>
 
-
     <div class="lock-content">
 
+        <div class="lock-avatar">
+
+            🖥️
+
+        </div>
 
         <h2>
-            PolashOS
+
+            Welcome Back
+
         </h2>
 
-
         <p>
-            Welcome Back
+
+            Click Unlock to enter PolashOS
+
         </p>
 
-
         <button id="unlockBtn">
-            Unlock
-        </button>
 
+            Unlock
+
+        </button>
 
     </div>
 
-
 </section>
 
-
-
-
-
-
-
-<!-- ========================= -->
-<!-- Aurora Desktop -->
-<!-- ========================= -->
-
+<!-- ==========================================
+     Aurora Desktop
+========================================== -->
 
 <main id="desktop">
 
-
-
-
-
-<!-- Desktop Icons -->
-
+<!-- ==========================================
+     Desktop Icons
+========================================== -->
 
 <div id="desktop-icons">
 
-
     <div class="desktop-icon" id="browserIcon">
-
         🌐
-
-        <span>
-            Polaris Browser
-        </span>
-
+        <span>Polaris Browser</span>
     </div>
-
-
 
     <div class="desktop-icon" id="filesIcon">
-
         📁
-
-        <span>
-            Atlas Files
-        </span>
-
+        <span>Atlas Files</span>
     </div>
-
-
 
     <div class="desktop-icon" id="terminalIcon">
-
         💻
-
-        <span>
-            Nova Terminal
-        </span>
-
+        <span>Nova Terminal</span>
     </div>
-
-
 
     <div class="desktop-icon" id="controlIcon">
-
         ⚙️
-
-        <span>
-            Control Center
-        </span>
-
+        <span>Control Center</span>
     </div>
-
 
 </div>
 
-
-
-
-
-
-
-<!-- ========================= -->
-<!-- Window Manager Apps -->
-<!-- ========================= -->
-
+<!-- ==========================================
+     Window Area
+========================================== -->
 
 <section id="windows">
 
+    <!-- Polaris Browser -->
 
+    <div id="browser-window"
+         class="window"
+         hidden>
 
-<!-- Polaris Browser -->
+        <div class="window-titlebar">
 
+            <span>🌐 Polaris Browser</span>
 
-<div id="browser-window" class="polash-window" hidden>
+            <div class="window-controls">
 
+                <button class="window-minimize">—</button>
 
-    <div class="polash-titlebar">
+                <button class="window-maximize">□</button>
 
+                <button class="window-close">✕</button>
 
-        <span>
-            🌐 Polaris Browser
-        </span>
+            </div>
 
+        </div>
 
-        <button class="window-close">
-            ✕
-        </button>
+        <div class="window-content">
 
+            <h2>Welcome to Polaris Browser</h2>
 
-    </div>
+            <p>
+                This is the first application inside PolashOS.
+            </p>
 
-
-    <div class="polash-content">
-
-
-        <h2>
-            Welcome to Polaris Browser
-        </h2>
-
-
-        <p>
-            This is the first application inside PolashOS.
-        </p>
-
+        </div>
 
     </div>
 
+    <!-- Atlas Files -->
 
-</div>
+    <div id="files-window"
+         class="window"
+         hidden>
 
+        <div class="window-titlebar">
 
+            <span>📁 Atlas Files</span>
 
+            <div class="window-controls">
 
+                <button class="window-minimize">—</button>
 
-<!-- Atlas Files -->
+                <button class="window-maximize">□</button>
 
+                <button class="window-close">✕</button>
 
-<div id="files-window" class="polash-window" hidden>
+            </div>
 
+        </div>
 
-    <div class="polash-titlebar">
+        <div class="window-content">
 
+            <h2>Atlas Files</h2>
 
-        <span>
-            📁 Atlas Files
-        </span>
+            <p>File Manager coming soon...</p>
 
-
-        <button class="window-close">
-            ✕
-        </button>
-
-
-    </div>
-
-
-    <div class="polash-content">
-
-
-        <h2>
-            Atlas Files Manager
-        </h2>
-
-
-        <p>
-            Your files will appear here.
-        </p>
-
+        </div>
 
     </div>
 
+    <!-- Nova Terminal -->
 
-</div>
+    <div id="terminal-window"
+         class="window"
+         hidden>
 
+        <div class="window-titlebar">
 
+            <span>💻 Nova Terminal</span>
 
+            <div class="window-controls">
 
+                <button class="window-minimize">—</button>
 
-<!-- Nova Terminal -->
+                <button class="window-maximize">□</button>
 
+                <button class="window-close">✕</button>
 
-<div id="terminal-window" class="polash-window" hidden>
+            </div>
 
+        </div>
 
-    <div class="polash-titlebar">
+        <div class="window-content">
 
+            <h2>Nova Terminal</h2>
 
-        <span>
-            💻 Nova Terminal
-        </span>
+            <p>Terminal Engine coming soon...</p>
 
-
-        <button class="window-close">
-            ✕
-        </button>
-
-
-    </div>
-
-
-    <div class="polash-content">
-
-
-        <h2>
-            Nova Terminal
-        </h2>
-
-
-        <p>
-            Command interface ready.
-        </p>
-
+        </div>
 
     </div>
 
+    <!-- Control Center -->
 
-</div>
+    <div id="control-window"
+         class="window"
+         hidden>
 
+        <div class="window-titlebar">
 
+            <span>⚙️ Control Center</span>
 
+            <div class="window-controls">
 
+                <button class="window-minimize">—</button>
 
+                <button class="window-maximize">□</button>
 
-<!-- Control Center -->
+                <button class="window-close">✕</button>
 
+            </div>
 
-<div id="control-window" class="polash-window" hidden>
+        </div>
 
+        <div class="window-content">
 
-    <div class="polash-titlebar">
+            <h2>Control Center</h2>
 
+            <p>System Settings will appear here.</p>
 
-        <span>
-            ⚙️ Control Center
-        </span>
-
-
-        <button class="window-close">
-            ✕
-        </button>
-
-
-    </div>
-
-
-
-    <div class="polash-content">
-
-
-        <h2>
-            ⚙️ PolashOS Control Center
-        </h2>
-
-
-        <p>
-            🌙 Theme: Dark Mode
-        </p>
-
-
-        <p>
-            🔊 Sound: Enabled
-        </p>
-
-
-        <p>
-            📶 Network: Connected
-        </p>
-
-
-        <p>
-            💻 System: PolashOS v1.0
-        </p>
-
+        </div>
 
     </div>
-
-
-</div>
-
-
 
 </section>
 
-
-
-
-
-
-
-<!-- ========================= -->
-<!-- Taskbar -->
-<!-- ========================= -->
-
+<!-- ==========================================
+     Taskbar
+========================================== -->
 
 <footer id="taskbar">
-
 
     <div id="start-button">
         ⊞
     </div>
 
-
-
     <div id="taskbar-apps"></div>
-
-
-
 
     <div id="system-tray">
 
+        <span>📶</span>
 
-        <span>
-            📶
-        </span>
+        <span>🔊</span>
 
-
-        <span>
-            🔊
-        </span>
-
-
-        <span id="clock">
-            00:00
-        </span>
-
+        <span id="clock">00:00</span>
 
     </div>
 
-
 </footer>
-
-
-
-
 
 </main>
 
-
-
-
-
-
-
-
-<!-- ========================= -->
-<!-- Start Menu -->
-<!-- ========================= -->
-
+<!-- ==========================================
+     Start Menu
+========================================== -->
 
 <aside id="start-menu" hidden>
 
-
-    <h3>
-        PolashOS
-    </h3>
-
-
+    <h3>PolashOS</h3>
 
     <ul>
 
+        <li id="menu-browser">🌐 Polaris Browser</li>
 
-        <li>
-            🌐 Polaris Browser
-        </li>
+        <li id="menu-files">📁 Atlas Files</li>
 
+        <li id="menu-terminal">💻 Nova Terminal</li>
 
-        <li>
-            📁 Atlas Files
-        </li>
-
-
-        <li>
-            💻 Nova Terminal
-        </li>
-
-
-        <li>
-            ⚙️ Control Center
-        </li>
-
+        <li id="menu-control">⚙️ Control Center</li>
 
     </ul>
 
-
 </aside>
 
-
-
-
-
-
-
-
-<!-- ========================= -->
-<!-- Scripts -->
-<!-- ========================= -->
-
+<!-- ==========================================
+     Core Scripts
+========================================== -->
 
 <script src="core/window-manager/window.js"></script>
 
 <script src="script.js"></script>
-
-
-
-
 
 </body>
 
