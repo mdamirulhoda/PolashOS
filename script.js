@@ -1,5 +1,5 @@
 /* ==========================================
-   PolashOS - Core Script v2
+   PolashOS - Core Script v3
    Window Manager Integration
    ========================================== */
 
@@ -13,22 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const bootScreen = document.getElementById("boot-screen");
-
     const bootProgress = document.querySelector(".boot-progress");
 
-
     const lockScreen = document.getElementById("lock-screen");
-
     const unlockBtn = document.getElementById("unlockBtn");
-
 
     const desktop = document.getElementById("desktop");
 
-
     const startButton = document.getElementById("start-button");
-
     const startMenu = document.getElementById("start-menu");
-
 
     const clock = document.getElementById("clock");
 
@@ -129,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================
-       Live Clock
+       Clock
     ========================== */
 
 
@@ -140,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const hours = String(now.getHours()).padStart(2, "0");
-
 
         const minutes = String(now.getMinutes()).padStart(2, "0");
 
@@ -163,37 +155,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================
-       Window Manager Setup
+       Register Windows
     ========================== */
 
 
     windowManager.register("browser-window");
+
+    windowManager.register("files-window");
+
+    windowManager.register("terminal-window");
+
+    windowManager.register("control-window");
+
+
 
 
 
 
 
     /* ==========================
-       Polaris Browser
+       App Icons
     ========================== */
 
 
-    const browserIcon = document.getElementById("browserIcon");
+    const apps = [
+
+        {
+            icon: "browserIcon",
+            window: "browser-window"
+        },
 
 
-    if (browserIcon) {
+        {
+            icon: "filesIcon",
+            window: "files-window"
+        },
 
 
-        browserIcon.addEventListener("dblclick", () => {
+        {
+            icon: "terminalIcon",
+            window: "terminal-window"
+        },
 
 
-            windowManager.open("browser-window");
+        {
+            icon: "controlIcon",
+            window: "control-window"
+        }
 
 
-        });
+    ];
 
 
-    }
+
+
+
+    apps.forEach(app => {
+
+
+        const icon = document.getElementById(app.icon);
+
+
+        if (icon) {
+
+
+            icon.addEventListener("dblclick", () => {
+
+
+                windowManager.open(app.window);
+
+
+            });
+
+
+        }
+
+
+    });
+
+
 
 
 
