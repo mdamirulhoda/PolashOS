@@ -3,14 +3,14 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>PolashOS</title>
+<title>PolashOS</title>
 
-    <meta name="description" content="PolashOS - A Real Browser Operating System">
+<meta name="description" content="PolashOS - A Real Browser Operating System">
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -22,6 +22,7 @@
 <!-- Genesis Boot -->
 <!-- ========================= -->
 
+
 <div id="boot-screen">
 
     <div class="boot-content">
@@ -30,9 +31,11 @@
             PolashOS
         </h1>
 
+
         <p class="boot-status">
             Initializing Polaris Engine...
         </p>
+
 
         <div class="boot-loader">
 
@@ -40,9 +43,12 @@
 
         </div>
 
+
     </div>
 
 </div>
+
+
 
 
 
@@ -50,25 +56,34 @@
 <!-- Lock Screen -->
 <!-- ========================= -->
 
+
 <section id="lock-screen" hidden>
 
+
     <div class="lock-content">
+
 
         <h2>
             PolashOS
         </h2>
 
+
         <p>
             Welcome Back
         </p>
+
 
         <button id="unlockBtn">
             Unlock
         </button>
 
+
     </div>
 
+
 </section>
+
+
 
 
 
@@ -83,6 +98,7 @@
 
 
 <!-- Desktop Icons -->
+
 
 <div id="desktop-icons">
 
@@ -108,7 +124,6 @@
         </span>
 
     </div>
-
 
 
 
@@ -150,173 +165,177 @@
 <section id="windows">
 
 
-    <!-- Polaris Browser -->
 
-    <div id="browser-window" class="window" hidden>
-
-
-        <div class="window-titlebar">
+<!-- Polaris Browser -->
 
 
-            <span>
-                🌐 Polaris Browser
-            </span>
+<div id="browser-window" class="polash-window" hidden>
 
 
-            <button class="window-close">
-                ✕
-            </button>
+    <div class="polash-titlebar">
 
 
-        </div>
+        <span>
+            🌐 Polaris Browser
+        </span>
 
 
-        <div class="window-content">
-
-
-            <h2>
-                Welcome to Polaris Browser
-            </h2>
-
-
-            <p>
-                This is the first application inside PolashOS.
-            </p>
-
-
-        </div>
+        <button class="window-close">
+            ✕
+        </button>
 
 
     </div>
 
 
-
-    <!-- Atlas Files -->
-
-    <div id="files-window" class="window" hidden>
+    <div class="polash-content">
 
 
-        <div class="window-titlebar">
+        <h2>
+            Welcome to Polaris Browser
+        </h2>
 
 
-            <span>
-                📁 Atlas Files
-            </span>
-
-
-            <button class="window-close">
-                ✕
-            </button>
-
-
-        </div>
-
-
-        <div class="window-content">
-
-
-            <h2>
-                Atlas Files Manager
-            </h2>
-
-
-            <p>
-                Your files will appear here.
-            </p>
-
-
-        </div>
+        <p>
+            This is the first application inside PolashOS.
+        </p>
 
 
     </div>
 
 
+</div>
 
 
 
-    <!-- Nova Terminal -->
 
 
-    <div id="terminal-window" class="window" hidden>
+<!-- Atlas Files -->
 
 
-        <div class="window-titlebar">
+<div id="files-window" class="polash-window" hidden>
 
 
-            <span>
-                💻 Nova Terminal
-            </span>
+    <div class="polash-titlebar">
 
 
-            <button class="window-close">
-                ✕
-            </button>
+        <span>
+            📁 Atlas Files
+        </span>
 
 
-        </div>
-
-
-        <div class="window-content">
-
-
-            <h2>
-                Nova Terminal
-            </h2>
-
-
-            <p>
-                Command interface ready.
-            </p>
-
-
-        </div>
+        <button class="window-close">
+            ✕
+        </button>
 
 
     </div>
 
 
+    <div class="polash-content">
 
 
-
-    <!-- Control Center -->
-
-
-    <div id="control-window" class="window" hidden>
+        <h2>
+            Atlas Files Manager
+        </h2>
 
 
-        <div class="window-titlebar">
-
-
-            <span>
-                ⚙️ Control Center
-            </span>
-
-
-            <button class="window-close">
-                ✕
-            </button>
-
-
-        </div>
-
-
-        <div class="window-content">
-
-
-            <h2>
-                Control Center
-            </h2>
-
-
-            <p>
-                Manage PolashOS settings.
-            </p>
-
-
-        </div>
+        <p>
+            Your files will appear here.
+        </p>
 
 
     </div>
+
+
+</div>
+
+
+
+<!-- Nova Terminal -->
+
+
+<div id="terminal-window" class="polash-window" hidden>
+
+
+    <div class="polash-titlebar">
+
+
+        <span>
+            💻 Nova Terminal
+        </span>
+
+
+        <button class="window-close">
+            ✕
+        </button>
+
+
+    </div>
+
+
+    <div class="polash-content">
+
+
+        <h2>
+            Nova Terminal
+        </h2>
+
+
+        <p>
+            Command interface ready.
+        </p>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+<!-- Control Center -->
+
+
+<div id="control-window" class="polash-window" hidden>
+
+
+    <div class="polash-titlebar">
+
+
+        <span>
+            ⚙️ Control Center
+        </span>
+
+
+        <button class="window-close">
+            ✕
+        </button>
+
+
+    </div>
+
+
+    <div class="polash-content">
+
+
+        <h2>
+            Control Center
+        </h2>
+
+
+        <p>
+            Manage PolashOS settings.
+        </p>
+
+
+    </div>
+
+
+</div>
 
 
 </section>
@@ -325,7 +344,10 @@
 
 
 
+
+<!-- ========================= -->
 <!-- Taskbar -->
+<!-- ========================= -->
 
 
 <footer id="taskbar">
@@ -336,7 +358,9 @@
     </div>
 
 
+
     <div id="taskbar-apps"></div>
+
 
 
 
@@ -361,11 +385,14 @@
     </div>
 
 
+
 </footer>
 
 
 
+
 </main>
+
 
 
 
@@ -416,12 +443,15 @@
 
 
 
-<!-- Window Manager -->
+
+
+
+<!-- ========================= -->
+<!-- Scripts -->
+<!-- ========================= -->
+
 
 <script src="core/window-manager/window.js"></script>
-
-
-<!-- Core Script -->
 
 <script src="script.js"></script>
 
