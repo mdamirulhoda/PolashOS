@@ -124,6 +124,52 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ==========================
+       Window Drag System
+    ========================== */
+
+    let isDragging = false;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    const titleBar = document.querySelector(".window-titlebar");
+
+    if (titleBar && browserWindow) {
+
+        titleBar.addEventListener("mousedown", (event) => {
+
+            isDragging = true;
+
+            offsetX = event.clientX - browserWindow.offsetLeft;
+            offsetY = event.clientY - browserWindow.offsetTop;
+
+            browserWindow.style.cursor = "grabbing";
+
+        });
+
+        document.addEventListener("mousemove", (event) => {
+
+            if (!isDragging) return;
+
+            browserWindow.style.left =
+                (event.clientX - offsetX) + "px";
+
+            browserWindow.style.top =
+                (event.clientY - offsetY) + "px";
+
+        });
+
+        document.addEventListener("mouseup", () => {
+
+            isDragging = false;
+
+            browserWindow.style.cursor = "default";
+
+        });
+
+    }
+
+    /* ==========================
        Boot Start
     ========================== */
 
