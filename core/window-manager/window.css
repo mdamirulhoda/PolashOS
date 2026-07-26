@@ -54,6 +54,7 @@
     overflow: auto;
 }
 
+
 /* Window Animation + Glass Effect */
 
 .polash-window {
@@ -61,7 +62,9 @@
     animation: windowOpen 0.3s ease;
 }
 
+
 @keyframes windowOpen {
+
     from {
         opacity: 0;
         transform: scale(0.9);
@@ -71,25 +74,39 @@
         opacity: 1;
         transform: scale(1);
     }
+
 }
+
+
 
 /* Maximize Window Style */
 
 .polash-window.maximized {
+
     width: 100vw;
     height: 100vh;
     top: 0 !important;
     left: 0 !important;
     border-radius: 0;
+
 }
+
+
 
 /* Resize Handle */
 
 .resize-handle {
+
     position: absolute;
+
     width: 15px;
+
     height: 15px;
+
     right: 0;
+
     bottom: 0;
+
     cursor: nwse-resize;
+
 }
