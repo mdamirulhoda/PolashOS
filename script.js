@@ -1,85 +1,100 @@
 /* ==========================================
-   PolashOS Core Script v2
+   PolashOS Core Script v3
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
-
-    /* ==========================================
-       Boot Screen
-    ========================================== */
 
     const bootScreen = document.getElementById("boot-screen");
     const bootProgress = document.querySelector(".boot-progress");
 
     const lockScreen = document.getElementById("lock-screen");
-
     const unlockBtn = document.getElementById("unlockBtn");
 
     const desktop = document.getElementById("desktop");
 
+    /* ==========================
+       Initial State
+    ========================== */
+
     if (desktop) {
-
         desktop.style.display = "none";
-
     }
 
     if (lockScreen) {
-
         lockScreen.hidden = true;
-
+        lockScreen.style.display = "none";
     }
 
     if (bootProgress) {
-
         bootProgress.style.width = "100%";
-
     }
+
+    /* ==========================
+       Boot Animation
+    ========================== */
 
     setTimeout(() => {
 
         if (bootScreen) {
 
-            bootScreen.style.display = "none";
+            bootScreen.style.opacity = "0";
+
+            setTimeout(() => {
+
+                bootScreen.style.display = "none";
+
+            }, 700);
 
         }
 
         if (lockScreen) {
 
             lockScreen.hidden = false;
+            lockScreen.style.display = "flex";
 
         }
 
-    },2500);
+    }, 2500);
 
-    /* ==========================================
-       Unlock
-    ========================================== */
+    /* ==========================
+       Unlock Desktop
+    ========================== */
 
     if (unlockBtn) {
 
-        unlockBtn.addEventListener("click",()=>{
+        unlockBtn.addEventListener("click", () => {
 
-            lockScreen.hidden = true;
+            if (lockScreen) {
 
-            desktop.style.display = "block";
+                lockScreen.style.display = "none";
+                lockScreen.hidden = true;
+
+            }
+
+            if (desktop) {
+
+                desktop.style.display = "block";
+
+            }
 
         });
 
     }
 
-    /* ==========================================
-       Live Clock
-    ========================================== */
+    /* ==========================
+       Clock
+    ========================== */
 
     const clock = document.getElementById("clock");
 
-    function updateClock(){
+    function updateClock() {
+
+        if (!clock) return;
 
         const now = new Date();
 
-        const h = String(now.getHours()).padStart(2,"0");
-
-        const m = String(now.getMinutes()).padStart(2,"0");
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
 
         clock.textContent = `${h}:${m}`;
 
@@ -87,19 +102,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateClock();
 
-    setInterval(updateClock,1000);
+    setInterval(updateClock, 1000);
 
-                              /* ==========================================
+    /* ==========================
        Start Menu
-    ========================================== */
+    ========================== */
 
     const startButton = document.getElementById("start-button");
-
     const startMenu = document.getElementById("start-menu");
 
     if (startButton && startMenu) {
 
-        startButton.addEventListener("click",(e)=>{
+        startButton.addEventListener("click", (e) => {
 
             e.stopPropagation();
 
@@ -107,79 +121,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-        document.addEventListener("click",()=>{
+        document.addEventListener("click", (e) => {
 
-            startMenu.hidden = true;
+            if (
+                !startMenu.contains(e.target) &&
+                !startButton.contains(e.target)
+            ) {
+
+                startMenu.hidden = true;
+
+            }
 
         });
 
     }
 
-    /* ==========================================
+    /* ==========================
        Desktop Icons
-    ========================================== */
+    ========================== */
 
-    const browserIcon = document.getElementById("browserIcon");
+    const apps = {
 
-    const filesIcon = document.getElementById("filesIcon");
+        browserIcon: "browser-window",
+        filesIcon: "files-window",
+        terminalIcon: "terminal-window",
+        controlIcon: "control-window"
 
-    const terminalIcon = document.getElementById("terminalIcon");
+    };
 
-    const controlIcon = document.getElementById("controlIcon");
+    Object.keys(apps).forEach(iconId => {
 
-    if(browserIcon){
+        const icon = document.getElementById(iconId);
 
-        browserIcon.addEventListener("dblclick",()=>{
+        if (!icon) return;
 
-            windowManager.open("browser-window");
+        icon.addEventListener("dblclick", () => {
 
-        });
+            if (typeof windowManager !== "undefined") {
 
-    }
-
-    if(filesIcon){
-
-        filesIcon.addEventListener("dblclick",()=>{
-
-            windowManager.open("files-window");
-
-        });
-
-    }
-
-    if(terminalIcon){
-
-        terminalIcon.addEventListener("dblclick",()=>{
-
-            windowManager.open("terminal-window");
-
-        });
-
-    }
-
-    if(controlIcon){
-
-        controlIcon.addEventListener("dblclick",()=>{
-
-            windowManager.open("control-window");
-
-        });
-
-    }
-
-    /* ==========================================
-       Window Close Buttons
-    ========================================== */
-
-    document.querySelectorAll(".window-close").forEach(button=>{
-
-        button.addEventListener("click",(e)=>{
-
-            const win = e.target.closest(".window");
-
-            if(win){
-
-                windowManager.close(win.id);
+                windowManager.open(apps[iconId]);
 
             }
 
@@ -187,9 +167,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-                              /* ==========================================
+    /* ==========================
        Initialize Window Manager
-    ========================================== */
+    ========================== */
 
     if (typeof windowManager !== "undefined") {
 
