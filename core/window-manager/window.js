@@ -360,3 +360,186 @@ document.addEventListener("DOMContentLoaded", () => {
     windowManager.initialize();
 
 });
+/* ==========================================
+   PolashOS Window Manager v5
+   Part 1 - Window Animation
+========================================== */
+
+WindowManager.prototype.animateOpen = function (id) {
+
+    const windowData = this.get(id);
+
+    if (!windowData) return;
+
+    const win = windowData.element;
+
+    win.style.opacity = "0";
+    win.style.transform = "scale(.92)";
+
+    requestAnimationFrame(() => {
+
+        win.style.transition =
+            "opacity .25s ease, transform .25s ease";
+
+        win.style.opacity = "1";
+        win.style.transform = "scale(1)";
+
+    });
+
+};
+
+WindowManager.prototype.animateClose = function (id) {
+
+    const windowData = this.get(id);
+
+    if (!windowData) return;
+
+    const win = windowData.element;
+
+    win.style.transition =
+        "opacity .2s ease, transform .2s ease";
+
+    win.style.opacity = "0";
+    win.style.transform = "scale(.95)";
+
+    setTimeout(() => {
+
+        win.hidden = true;
+
+        win.style.display = "none";
+
+        win.style.opacity = "";
+
+        win.style.transform = "";
+
+    },200);
+
+};
+/* ==========================================
+   Window Manager v5
+   Part 2 - Prevent Duplicate Windows
+========================================== */
+
+WindowManager.prototype.isOpen = function (id) {
+
+    const windowData = this.get(id);
+
+    if (!windowData) return false;
+
+    return !windowData.element.hidden &&
+           windowData.element.style.display !== "none";
+
+};
+
+WindowManager.prototype.toggle = function (id) {
+
+    const windowData = this.get(id);
+
+    if (!windowData) return;
+
+    if (windowData.minimized) {
+
+        this.restore(id);
+        return;
+
+    }
+
+    if (this.isOpen(id)) {
+
+        this.focus(id);
+
+    } else {
+
+        this.open(id);
+
+    }
+
+};
+/* ==========================
+   Toggle Window
+========================== */
+
+toggle(id) {
+
+    const windowData = this.get(id);
+
+    if (!windowData) return;
+
+    if (windowData.minimized) {
+
+        this.restore(id);
+
+        return;
+
+    }
+
+    if (this.activeWindow === id) {
+
+        this.minimize(id);
+
+        return;
+
+    }
+
+    this.focus(id);
+
+}
+
+/* ==========================
+   Focus Active Taskbar
+========================== */
+
+updateTaskbarState() {
+
+    document.querySelectorAll(".taskbar-app").forEach(btn => {
+
+        btn.classList.remove("active");
+
+    });
+
+    if (!this.activeWindow) return;
+
+    const btn =
+        document.getElementById(`task-${this.activeWindow}`);
+
+    if (btn) {
+
+        btn.classList.add("active");
+
+    }
+
+}
+/* ==========================================
+   PolashOS Window Manager v5
+   Final Patch
+========================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    [
+        "browserIcon",
+        "filesIcon",
+        "terminalIcon",
+        "controlIcon"
+    ].forEach(iconId => {
+
+        const icon = document.getElementById(iconId);
+
+        if (!icon) return;
+
+        icon.addEventListener("dblclick", () => {
+
+            const map = {
+                browserIcon: "browser-window",
+                filesIcon: "files-window",
+                terminalIcon: "terminal-window",
+                controlIcon: "control-window"
+            };
+
+            windowManager.toggle(map[iconId]);
+
+        });
+
+    });
+
+});
