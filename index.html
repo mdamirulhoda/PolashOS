@@ -142,11 +142,15 @@
 
 
 
-<!-- Windows -->
+<!-- ========================= -->
+<!-- Window Manager Apps -->
+<!-- ========================= -->
 
 
 <section id="windows">
 
+
+    <!-- Polaris Browser -->
 
     <div id="browser-window" class="window" hidden>
 
@@ -159,14 +163,12 @@
             </span>
 
 
-            <button id="closeBrowser">
+            <button class="window-close">
                 ✕
             </button>
 
 
         </div>
-
-
 
 
         <div class="window-content">
@@ -177,9 +179,134 @@
             </h2>
 
 
-
             <p>
                 This is the first application inside PolashOS.
+            </p>
+
+
+        </div>
+
+
+    </div>
+        <!-- Atlas Files -->
+
+    <div id="files-window" class="window" hidden>
+
+
+        <div class="window-titlebar">
+
+
+            <span>
+                📁 Atlas Files
+            </span>
+
+
+            <button class="window-close">
+                ✕
+            </button>
+
+
+        </div>
+
+
+        <div class="window-content">
+
+
+            <h2>
+                Atlas Files Manager
+            </h2>
+
+
+            <p>
+                Your files will appear here.
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Nova Terminal -->
+
+
+    <div id="terminal-window" class="window" hidden>
+
+
+        <div class="window-titlebar">
+
+
+            <span>
+                💻 Nova Terminal
+            </span>
+
+
+            <button class="window-close">
+                ✕
+            </button>
+
+
+        </div>
+
+
+        <div class="window-content">
+
+
+            <h2>
+                Nova Terminal
+            </h2>
+
+
+            <p>
+                Command interface ready.
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Control Center -->
+
+
+    <div id="control-window" class="window" hidden>
+
+
+        <div class="window-titlebar">
+
+
+            <span>
+                ⚙️ Control Center
+            </span>
+
+
+            <button class="window-close">
+                ✕
+            </button>
+
+
+        </div>
+
+
+        <div class="window-content">
+
+
+            <h2>
+                Control Center
+            </h2>
+
+
+            <p>
+                Manage PolashOS settings.
             </p>
 
 
@@ -286,9 +413,15 @@
 
 
 
+<!-- Window Manager -->
+
 <script src="core/window-manager/window.js"></script>
 
+
+<!-- Core Script -->
+
 <script src="script.js"></script>
+
 
 
 </body>
