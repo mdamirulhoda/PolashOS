@@ -1,470 +1,200 @@
 /* ==========================================
-   PolashOS Window Manager v3
-   Professional Window Engine
-   ========================================== */
-
+   PolashOS Window Manager v2
+   Part 1
+========================================== */
 
 class WindowManager {
-
 
     constructor() {
 
         this.windows = {};
 
+        this.activeWindow = null;
+
         this.zIndex = 100;
 
     }
-
-
-
 
     /* ==========================
        Register Window
     ========================== */
 
-
     register(id) {
 
+        const win = document.getElementById(id);
 
-        const element = document.getElementById(id);
+        if (!win) {
 
-
-        if (!element) {
-
-
-            console.warn(`Window not found: ${id}`);
+            console.warn("Window not found:", id);
 
             return;
 
-
         }
 
+        this.windows[id] = win;
 
-        this.windows[id] = element;
+        win.style.position = "absolute";
 
-
-        this.setupControls(element, id);
-
-        this.makeDraggable(element);
-
-        this.makeResizable(element);
-
+        win.style.zIndex = ++this.zIndex;
 
     }
-
-
-
-
-
-
 
     /* ==========================
        Open Window
     ========================== */
 
-
     open(id) {
-
 
         const win = this.windows[id];
 
-
         if (!win) return;
-
 
         win.hidden = false;
 
         win.style.display = "block";
 
-
         this.focus(id);
 
-
     }
-
-
-
-
-
-
 
     /* ==========================
        Close Window
     ========================== */
 
-
     close(id) {
-
 
         const win = this.windows[id];
 
-
         if (!win) return;
-
 
         win.hidden = true;
 
-
     }
-
-
-
-
-
-
 
     /* ==========================
        Focus Window
     ========================== */
 
-
     focus(id) {
-
 
         const win = this.windows[id];
 
-
         if (!win) return;
 
+        this.activeWindow = id;
 
-        this.zIndex++;
+        win.style.zIndex = ++this.zIndex;
 
-
-        win.style.zIndex = this.zIndex;
-
-
-    }
-
-
-
-
-
-
-
-
-    /* ==========================
-       Window Controls
-    ========================== */
-
-
-    setupControls(element, id) {
-
-
-
-        const closeBtn =
-        element.querySelector(".window-close");
-
-
-        const minimizeBtn =
-        element.querySelector(".window-minimize");
-
-
-        const maximizeBtn =
-        element.querySelector(".window-maximize");
-
-
-
-
-
-        if (closeBtn) {
-
-
-            closeBtn.onclick = () => {
-
-
-                this.close(id);
-
-
-            };
-
-
-        }
-
-
-
-
-
-
-        if (minimizeBtn) {
-
-
-            minimizeBtn.onclick = () => {
-
-
-                element.style.display = "none";
-
-
-            };
-
-
-        }
-
-
-
-
-
-
-
-        if (maximizeBtn) {
-
-
-            maximizeBtn.onclick = () => {
-
-
-                element.classList.toggle("maximized");
-
-
-            };
-
-
-        }
-
-
-    }
-
-
-
-
-
-
-
-
+           }
 
     /* ==========================
        Drag System
     ========================== */
 
+    makeDraggable(id) {
 
-    makeDraggable(element) {
+        const win = this.windows[id];
 
+        if (!win) return;
 
+        const titlebar = win.querySelector(".window-titlebar");
 
-        const bar =
-        element.querySelector(".window-titlebar");
+        if (!titlebar) return;
 
+        let isDragging = false;
 
+        let startX = 0;
 
-        if (!bar) return;
+        let startY = 0;
 
+        let left = 0;
 
+        let top = 0;
 
+        titlebar.addEventListener("mousedown", (e) => {
 
-        let dragging = false;
+            isDragging = true;
 
-        let offsetX = 0;
-
-        let offsetY = 0;
-
-
-
-
-
-
-        bar.addEventListener("mousedown", (e) => {
-
-
-
-            dragging = true;
-
-
-
-            this.focus(
-                element.id
-            );
-
-
-
-            offsetX =
-            e.clientX - element.offsetLeft;
-
-
-
-            offsetY =
-            e.clientY - element.offsetTop;
-
-
-
-        });
-
-
-
-
-
-
-        document.addEventListener("mousemove", (e) => {
-
-
-
-            if (!dragging) return;
-
-
-
-            element.style.left =
-            `${e.clientX - offsetX}px`;
-
-
-
-            element.style.top =
-            `${e.clientY - offsetY}px`;
-
-
-
-        });
-
-
-
-
-
-
-
-        document.addEventListener("mouseup", () => {
-
-
-            dragging = false;
-
-
-        });
-
-
-    }
-
-
-
-
-
-
-
-
-
-    /* ==========================
-       Resize System
-    ========================== */
-
-
-    makeResizable(element) {
-
-
-
-        const resizeHandle =
-        document.createElement("div");
-
-
-
-        resizeHandle.className =
-        "resize-handle";
-
-
-
-        element.appendChild(resizeHandle);
-
-
-
-
-
-        let resizing = false;
-
-        let startX;
-
-        let startY;
-
-        let startWidth;
-
-        let startHeight;
-
-
-
-
-
-
-        resizeHandle.addEventListener("mousedown", (e) => {
-
-
-
-            resizing = true;
-
-
+            this.focus(id);
 
             startX = e.clientX;
 
             startY = e.clientY;
 
+            left = win.offsetLeft;
 
+            top = win.offsetTop;
 
-            startWidth =
-            element.offsetWidth;
-
-
-
-            startHeight =
-            element.offsetHeight;
-
-
-
-            e.stopPropagation();
-
-
+            document.body.style.userSelect = "none";
 
         });
-
-
-
-
-
-
 
         document.addEventListener("mousemove", (e) => {
 
+            if (!isDragging) return;
 
+            const dx = e.clientX - startX;
 
-            if (!resizing) return;
+            const dy = e.clientY - startY;
 
+            win.style.left = (left + dx) + "px";
 
-
-
-            element.style.width =
-            `${startWidth + (e.clientX - startX)}px`;
-
-
-
-            element.style.height =
-            `${startHeight + (e.clientY - startY)}px`;
-
-
+            win.style.top = (top + dy) + "px";
 
         });
-
-
-
-
-
-
 
         document.addEventListener("mouseup", () => {
 
+            isDragging = false;
 
-
-            resizing = false;
-
-
+            document.body.style.userSelect = "";
 
         });
 
+    }
 
+    /* ==========================
+       Register Drag Automatically
+    ========================== */
+
+    initialize() {
+
+        Object.keys(this.windows).forEach(id => {
+
+            this.makeDraggable(id);
+
+        });
 
     }
 
-
-
 }
-
-
-
-
-
 
 /* ==========================================
    Global Window Manager
-   ========================================== */
-
+========================================== */
 
 const windowManager = new WindowManager();
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const windows = [
+
+        "browser-window",
+
+        "files-window",
+
+        "terminal-window",
+
+        "control-window"
+
+    ];
+
+    windows.forEach(id => {
+
+        windowManager.register(id);
+
+    });
+
+    windowManager.initialize();
+
+});
