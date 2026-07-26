@@ -1,6 +1,6 @@
 /* ==========================================
    PolashOS Window Manager v4
-   Part 1 - Core Engine
+   Part 1
 ========================================== */
 
 class WindowManager {
@@ -24,9 +24,10 @@ class WindowManager {
 
     register(id) {
 
-        const win = document.getElementById(id);
+        const element =
+            document.getElementById(id);
 
-        if (!win) {
+        if (!element) {
 
             console.warn(`Window not found: ${id}`);
 
@@ -36,7 +37,7 @@ class WindowManager {
 
         this.windows[id] = {
 
-            element: win,
+            element,
 
             minimized: false,
 
@@ -44,9 +45,9 @@ class WindowManager {
 
         };
 
-        win.style.position = "absolute";
+        element.style.position = "absolute";
 
-        win.style.zIndex = ++this.zIndex;
+        element.style.zIndex = ++this.zIndex;
 
     }
 
@@ -54,7 +55,7 @@ class WindowManager {
        Get Window
     ========================== */
 
-    getWindow(id) {
+    get(id) {
 
         return this.windows[id] || null;
 
@@ -66,21 +67,21 @@ class WindowManager {
 
     open(id) {
 
-        const windowData = this.getWindow(id);
+        const windowData = this.get(id);
 
         if (!windowData) return;
 
-        const win = windowData.element;
+        const element = windowData.element;
 
-        win.hidden = false;
+        element.hidden = false;
 
-        win.style.display = "block";
+        element.style.display = "block";
 
         windowData.minimized = false;
 
         this.focus(id);
 
-        this.addTaskbarApp(id);
+        this.addTaskbarButton(id);
 
     }
 
@@ -90,7 +91,7 @@ class WindowManager {
 
     close(id) {
 
-        const windowData = this.getWindow(id);
+        const windowData = this.get(id);
 
         if (!windowData) return;
 
@@ -98,7 +99,7 @@ class WindowManager {
 
         windowData.minimized = false;
 
-        this.removeTaskbarApp(id);
+        this.removeTaskbarButton(id);
 
     }
 
@@ -108,33 +109,34 @@ class WindowManager {
 
     focus(id) {
 
-        const windowData = this.getWindow(id);
+        const windowData = this.get(id);
 
         if (!windowData) return;
 
         this.activeWindow = id;
 
-        windowData.element.style.zIndex = ++this.zIndex;
+        windowData.element.style.zIndex =
+            ++this.zIndex;
 
     }
-
     /* ==========================
        Drag System
     ========================== */
 
     makeDraggable(id) {
 
-        const windowData = this.getWindow(id);
+        const windowData = this.get(id);
 
         if (!windowData) return;
 
         const win = windowData.element;
 
-        const titlebar = win.querySelector(".window-titlebar");
+        const titlebar =
+            win.querySelector(".window-titlebar");
 
         if (!titlebar) return;
 
-        let isDragging = false;
+        let dragging = false;
 
         let offsetX = 0;
 
@@ -142,9 +144,7 @@ class WindowManager {
 
         titlebar.addEventListener("mousedown", (e) => {
 
-            if (windowData.maximized) return;
-
-            isDragging = true;
+            dragging = true;
 
             this.focus(id);
 
@@ -158,17 +158,19 @@ class WindowManager {
 
         document.addEventListener("mousemove", (e) => {
 
-            if (!isDragging) return;
+            if (!dragging) return;
 
-            win.style.left = `${e.clientX - offsetX}px`;
+            win.style.left =
+                `${e.clientX - offsetX}px`;
 
-            win.style.top = `${e.clientY - offsetY}px`;
+            win.style.top =
+                `${e.clientY - offsetY}px`;
 
         });
 
         document.addEventListener("mouseup", () => {
 
-            isDragging = false;
+            dragging = false;
 
             document.body.style.userSelect = "";
 
@@ -182,31 +184,29 @@ class WindowManager {
 
     attachFocus(id) {
 
-        const windowData = this.getWindow(id);
+        const windowData = this.get(id);
 
         if (!windowData) return;
 
-        const win = windowData.element;
-
-        win.addEventListener("mousedown", () => {
+        windowData.element.addEventListener("mousedown", () => {
 
             this.focus(id);
 
         });
 
-           /* ==========================
+    }
+
+    /* ==========================
        Minimize Window
     ========================== */
 
     minimize(id) {
 
-        const windowData = this.getWindow(id);
+        const windowData = this.get(id);
 
         if (!windowData) return;
 
-        const win = windowData.element;
-
-        win.style.display = "none";
+        windowData.element.style.display = "none";
 
         windowData.minimized = true;
 
@@ -218,25 +218,22 @@ class WindowManager {
 
     restore(id) {
 
-        const windowData = this.getWindow(id);
+        const windowData = this.get(id);
 
         if (!windowData) return;
 
-        const win = windowData.element;
-
-        win.style.display = "block";
+        windowData.element.style.display = "block";
 
         windowData.minimized = false;
 
         this.focus(id);
 
     }
-
     /* ==========================
-       Taskbar Applications
+       Taskbar Buttons
     ========================== */
 
-    addTaskbarApp(id) {
+    addTaskbarButton(id) {
 
         if (!this.taskbarApps) return;
 
@@ -257,7 +254,7 @@ class WindowManager {
 
         button.addEventListener("click", () => {
 
-            const windowData = this.getWindow(id);
+            const windowData = this.get(id);
 
             if (!windowData) return;
 
@@ -277,9 +274,10 @@ class WindowManager {
 
     }
 
-    removeTaskbarApp(id) {
+    removeTaskbarButton(id) {
 
-        const button = document.getElementById(`task-${id}`);
+        const button =
+            document.getElementById(`task-${id}`);
 
         if (button) {
 
@@ -287,7 +285,9 @@ class WindowManager {
 
         }
 
-           /* ==========================
+    }
+
+    /* ==========================
        Initialize
     ========================== */
 
@@ -301,9 +301,11 @@ class WindowManager {
 
             const win = this.windows[id].element;
 
-            const closeBtn = win.querySelector(".window-close");
+            const closeBtn =
+                win.querySelector(".window-close");
 
-            const minimizeBtn = win.querySelector(".window-minimize");
+            const minimizeBtn =
+                win.querySelector(".window-minimize");
 
             if (closeBtn) {
 
@@ -358,7 +360,3 @@ document.addEventListener("DOMContentLoaded", () => {
     windowManager.initialize();
 
 });
-
-    }
-
-    }
