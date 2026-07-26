@@ -72,3 +72,13 @@
         transform: scale(1);
     }
 }
+
+/* Maximize Window Style */
+
+.polash-window.maximized {
+    width: 100vw;
+    height: 100vh;
+    top: 0 !important;
+    left: 0 !important;
+    border-radius: 0;
+}
