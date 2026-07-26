@@ -1,1 +1,12 @@
 /* PolashOS Window Styles */
+
+.polash-window {
+    position: absolute;
+    width: 500px;
+    height: 350px;
+    background: #111827;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    color: white;
+}
