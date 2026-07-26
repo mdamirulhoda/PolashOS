@@ -1,6 +1,6 @@
 /* ==========================================
-   PolashOS Window Manager v1
-   Core Engine
+   PolashOS Window Manager v2
+   Core Engine + Interaction
    ========================================== */
 
 class WindowManager {
@@ -12,6 +12,7 @@ class WindowManager {
         this.zIndex = 100;
 
     }
+
 
     register(id) {
 
@@ -27,7 +28,12 @@ class WindowManager {
 
         this.windows[id] = element;
 
+        this.setupControls(element, id);
+
+        this.makeDraggable(element);
+
     }
+
 
     open(id) {
 
@@ -41,6 +47,7 @@ class WindowManager {
 
     }
 
+
     close(id) {
 
         const win = this.windows[id];
@@ -51,11 +58,13 @@ class WindowManager {
 
     }
 
+
     toggle(id) {
 
         const win = this.windows[id];
 
         if (!win) return;
+
 
         if (win.hidden) {
 
@@ -69,6 +78,7 @@ class WindowManager {
 
     }
 
+
     focus(id) {
 
         const win = this.windows[id];
@@ -81,10 +91,144 @@ class WindowManager {
 
     }
 
+
+
+    /* ==========================================
+       Window Controls
+       ========================================== */
+
+    setupControls(element, id) {
+
+
+        const closeBtn = element.querySelector(".window-close");
+
+        const minimizeBtn = element.querySelector(".window-minimize");
+
+        const maximizeBtn = element.querySelector(".window-maximize");
+
+
+
+        if (closeBtn) {
+
+            closeBtn.onclick = () => {
+
+                this.close(id);
+
+            };
+
+        }
+
+
+
+        if (minimizeBtn) {
+
+            minimizeBtn.onclick = () => {
+
+                element.style.display = "none";
+
+            };
+
+        }
+
+
+
+        if (maximizeBtn) {
+
+            maximizeBtn.onclick = () => {
+
+                element.classList.toggle("maximized");
+
+            };
+
+        }
+
+
+    }
+
+
+
+    /* ==========================================
+       Drag System
+       ========================================== */
+
+
+    makeDraggable(element) {
+
+
+        const bar = element.querySelector(".polash-titlebar");
+
+
+        if (!bar) return;
+
+
+
+        let offsetX = 0;
+
+        let offsetY = 0;
+
+        let dragging = false;
+
+
+
+        bar.addEventListener("mousedown", (e) => {
+
+
+            dragging = true;
+
+
+            offsetX = e.clientX - element.offsetLeft;
+
+            offsetY = e.clientY - element.offsetTop;
+
+
+            this.zIndex++;
+
+            element.style.zIndex = this.zIndex;
+
+
+        });
+
+
+
+        document.addEventListener("mousemove", (e) => {
+
+
+            if (!dragging) return;
+
+
+
+            element.style.left = 
+            `${e.clientX - offsetX}px`;
+
+
+
+            element.style.top = 
+            `${e.clientY - offsetY}px`;
+
+
+        });
+
+
+
+        document.addEventListener("mouseup", () => {
+
+
+            dragging = false;
+
+
+        });
+
+
+    }
+
+
 }
+
+
 
 /* ==========================================
    Global Instance
    ========================================== */
+
 
 const windowManager = new WindowManager();
