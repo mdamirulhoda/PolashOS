@@ -1176,3 +1176,16 @@ html{
     letter-spacing:.5px;
 
 }
+/* ==========================================
+   Active Taskbar Button
+========================================== */
+
+.taskbar-app.active{
+
+    background:#4f8cff;
+
+    color:#fff;
+
+    box-shadow:0 0 15px rgba(79,140,255,.45);
+
+    }
