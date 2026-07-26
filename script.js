@@ -1,5 +1,6 @@
 /* ==========================================
-   PolashOS - Core Script v3
+   PolashOS - Core Script v4
+   Mobile Single Click Support
    Window Manager Integration
    ========================================== */
 
@@ -40,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
     /* ==========================
        Boot System
     ========================== */
@@ -62,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 bootScreen.style.display = "none";
-
 
                 lockScreen.hidden = false;
 
@@ -90,12 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         lockScreen.style.display = "none";
 
-
         desktop.style.display = "block";
 
 
     });
-
 
 
 
@@ -175,10 +172,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* ==========================
        App Icons
+       Mobile Single Click
     ========================== */
 
 
     const apps = [
+
 
         {
             icon: "browserIcon",
@@ -210,16 +209,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
     apps.forEach(app => {
 
 
         const icon = document.getElementById(app.icon);
 
 
+
         if (icon) {
 
 
-            icon.addEventListener("dblclick", () => {
+            icon.addEventListener("click", () => {
 
 
                 windowManager.open(app.window);
@@ -228,7 +229,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
 
+
         }
+
 
 
     });
