@@ -4,6 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>PolashOS</title>
@@ -18,7 +19,10 @@
 <body>
 
 
+<!-- ========================= -->
 <!-- Genesis Boot -->
+<!-- ========================= -->
+
 
 <div id="boot-screen">
 
@@ -28,15 +32,18 @@
             PolashOS
         </h1>
 
+
         <p class="boot-status">
             Initializing Polaris Engine...
         </p>
+
 
         <div class="boot-loader">
 
             <div class="boot-progress"></div>
 
         </div>
+
 
     </div>
 
@@ -45,25 +52,35 @@
 
 
 
+
+<!-- ========================= -->
 <!-- Lock Screen -->
+<!-- ========================= -->
+
 
 <section id="lock-screen" hidden>
 
+
     <div class="lock-content">
+
 
         <h2>
             PolashOS
         </h2>
 
+
         <p>
             Welcome Back
         </p>
+
 
         <button id="unlockBtn">
             Unlock
         </button>
 
+
     </div>
+
 
 </section>
 
@@ -71,13 +88,21 @@
 
 
 
-<!-- Desktop -->
+
+
+<!-- ========================= -->
+<!-- Aurora Desktop -->
+<!-- ========================= -->
+
 
 <main id="desktop">
 
 
 
+
+
 <!-- Desktop Icons -->
+
 
 <div id="desktop-icons">
 
@@ -136,18 +161,24 @@
 
 
 
-<!-- Windows -->
+
+<!-- ========================= -->
+<!-- Window Manager Apps -->
+<!-- ========================= -->
 
 
 <section id="windows">
 
 
-<!-- Browser Window -->
+
+<!-- Polaris Browser -->
+
 
 <div id="browser-window" class="polash-window" hidden>
 
 
     <div class="polash-titlebar">
+
 
         <span>
             🌐 Polaris Browser
@@ -163,6 +194,7 @@
 
 
     <div class="polash-content">
+
 
         <h2>
             Welcome to Polaris Browser
@@ -183,13 +215,14 @@
 
 
 
-<!-- Files Window -->
+<!-- Atlas Files -->
 
 
 <div id="files-window" class="polash-window" hidden>
 
 
     <div class="polash-titlebar">
+
 
         <span>
             📁 Atlas Files
@@ -205,6 +238,7 @@
 
 
     <div class="polash-content">
+
 
         <h2>
             Atlas Files Manager
@@ -225,14 +259,14 @@
 
 
 
-
-<!-- Terminal Window -->
+<!-- Nova Terminal -->
 
 
 <div id="terminal-window" class="polash-window" hidden>
 
 
     <div class="polash-titlebar">
+
 
         <span>
             💻 Nova Terminal
@@ -248,6 +282,7 @@
 
 
     <div class="polash-content">
+
 
         <h2>
             Nova Terminal
@@ -277,6 +312,7 @@
 
     <div class="polash-titlebar">
 
+
         <span>
             ⚙️ Control Center
         </span>
@@ -290,15 +326,32 @@
     </div>
 
 
+
     <div class="polash-content">
 
+
         <h2>
-            Control Center
+            ⚙️ PolashOS Control Center
         </h2>
 
 
         <p>
-            Manage PolashOS settings.
+            🌙 Theme: Dark Mode
+        </p>
+
+
+        <p>
+            🔊 Sound: Enabled
+        </p>
+
+
+        <p>
+            📶 Network: Connected
+        </p>
+
+
+        <p>
+            💻 System: PolashOS v1.0
         </p>
 
 
@@ -317,7 +370,9 @@
 
 
 
+<!-- ========================= -->
 <!-- Taskbar -->
+<!-- ========================= -->
 
 
 <footer id="taskbar">
@@ -359,6 +414,8 @@
 
 
 
+
+
 </main>
 
 
@@ -367,41 +424,45 @@
 
 
 
+
+<!-- ========================= -->
 <!-- Start Menu -->
+<!-- ========================= -->
 
 
 <aside id="start-menu" hidden>
 
 
-<h3>
-    PolashOS
-</h3>
+    <h3>
+        PolashOS
+    </h3>
 
 
 
-<ul>
-
-<li>
-🌐 Polaris Browser
-</li>
+    <ul>
 
 
-<li>
-📁 Atlas Files
-</li>
+        <li>
+            🌐 Polaris Browser
+        </li>
 
 
-<li>
-💻 Nova Terminal
-</li>
+        <li>
+            📁 Atlas Files
+        </li>
 
 
-<li>
-⚙️ Control Center
-</li>
+        <li>
+            💻 Nova Terminal
+        </li>
 
 
-</ul>
+        <li>
+            ⚙️ Control Center
+        </li>
+
+
+    </ul>
 
 
 </aside>
@@ -412,9 +473,17 @@
 
 
 
-<!-- Script -->
+
+<!-- ========================= -->
+<!-- Scripts -->
+<!-- ========================= -->
+
+
+<script src="core/window-manager/window.js"></script>
 
 <script src="script.js"></script>
+
+
 
 
 
