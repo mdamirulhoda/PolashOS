@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PolashOS Window Test</title>
 
+    <link rel="stylesheet" href="core/window-manager/window.css">
+</head>
+
+<body>
+
+
+<div id="testWindow" class="polash-window">
+
+    <div class="polash-titlebar">
+
+        <span>PolashOS App</span>
+
+        <div class="window-controls">
+
+            <div class="window-btn window-minimize"></div>
+
+            <div class="window-btn window-maximize"></div>
+
+            <div class="window-btn window-close"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="polash-content">
+
+        Welcome to PolashOS Window Manager 🚀
+
+    </div>
+
+
+</div>
+
+
+<script src="core/window-manager/window.js"></script>
+
+<script>
+
+windowManager.register("testWindow");
+
+windowManager.open("testWindow");
+
+</script>
+
+
+</body>
+</html>
