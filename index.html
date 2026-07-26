@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,161 +11,283 @@
     <meta name="description" content="PolashOS - A Real Browser Operating System">
 
     <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
-    <!-- ========================= -->
-    <!-- Genesis Boot -->
-    <!-- ========================= -->
 
-    <div id="boot-screen">
+<!-- ========================= -->
+<!-- Genesis Boot -->
+<!-- ========================= -->
 
-        <div class="boot-content">
+<div id="boot-screen">
 
-            <h1 class="boot-logo">PolashOS</h1>
+    <div class="boot-content">
 
-            <p class="boot-status">
-                Initializing Polaris Engine...
-            </p>
+        <h1 class="boot-logo">
+            PolashOS
+        </h1>
 
-            <div class="boot-loader">
-                <div class="boot-progress"></div>
-            </div>
+        <p class="boot-status">
+            Initializing Polaris Engine...
+        </p>
+
+        <div class="boot-loader">
+
+            <div class="boot-progress"></div>
 
         </div>
 
     </div>
 
-    <!-- ========================= -->
-    <!-- Lock Screen -->
-    <!-- ========================= -->
+</div>
 
-    <section id="lock-screen" hidden>
 
-        <div class="lock-content">
 
-            <h2>PolashOS</h2>
+<!-- ========================= -->
+<!-- Lock Screen -->
+<!-- ========================= -->
 
-            <p>Welcome Back</p>
+<section id="lock-screen" hidden>
 
-            <button id="unlockBtn">
-                Unlock
+    <div class="lock-content">
+
+        <h2>
+            PolashOS
+        </h2>
+
+        <p>
+            Welcome Back
+        </p>
+
+        <button id="unlockBtn">
+            Unlock
+        </button>
+
+    </div>
+
+</section>
+
+
+
+
+<!-- ========================= -->
+<!-- Aurora Desktop -->
+<!-- ========================= -->
+
+
+<main id="desktop">
+
+
+
+<!-- Desktop Icons -->
+
+<div id="desktop-icons">
+
+
+    <div class="desktop-icon" id="browserIcon">
+
+        🌐
+
+        <span>
+            Polaris Browser
+        </span>
+
+    </div>
+
+
+
+    <div class="desktop-icon" id="filesIcon">
+
+        📁
+
+        <span>
+            Atlas Files
+        </span>
+
+    </div>
+
+
+
+
+    <div class="desktop-icon" id="terminalIcon">
+
+        💻
+
+        <span>
+            Nova Terminal
+        </span>
+
+    </div>
+
+
+
+
+    <div class="desktop-icon" id="controlIcon">
+
+        ⚙️
+
+        <span>
+            Control Center
+        </span>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<!-- Windows -->
+
+
+<section id="windows">
+
+
+    <div id="browser-window" class="window" hidden>
+
+
+        <div class="window-titlebar">
+
+
+            <span>
+                🌐 Polaris Browser
+            </span>
+
+
+            <button id="closeBrowser">
+                ✕
             </button>
 
-        </div>
-
-    </section>
-
-    <!-- ========================= -->
-    <!-- Aurora Desktop -->
-    <!-- ========================= -->
-
-    <main id="desktop">
-
-        <!-- Desktop Icons -->
-
-        <div id="desktop-icons">
-
-            <div class="desktop-icon" id="browserIcon">
-                🌐
-                <span>Polaris Browser</span>
-            </div>
-
-            <div class="desktop-icon">
-                📁
-                <span>Atlas Files</span>
-            </div>
-
-            <div class="desktop-icon">
-                💻
-                <span>Nova Terminal</span>
-            </div>
-
-            <div class="desktop-icon">
-                ⚙️
-                <span>Control Center</span>
-            </div>
 
         </div>
 
-        <!-- Windows -->
 
-        <section id="windows">
 
-            <div id="browser-window" class="window" hidden>
 
-                <div class="window-titlebar">
+        <div class="window-content">
 
-                    <span>🌐 Polaris Browser</span>
 
-                    <button id="closeBrowser">✕</button>
+            <h2>
+                Welcome to Polaris Browser
+            </h2>
 
-                </div>
 
-                <div class="window-content">
 
-                    <h2>Welcome to Polaris Browser</h2>
+            <p>
+                This is the first application inside PolashOS.
+            </p>
 
-                    <p>
-                        This is the first application inside PolashOS.
-                    </p>
 
-                </div>
+        </div>
 
-            </div>
 
-        </section>
+    </div>
 
-        <!-- Taskbar -->
 
-        <footer id="taskbar">
+</section>
 
-            <div id="start-button">
-                ⊞
-            </div>
 
-            <div id="taskbar-apps"></div>
 
-            <div id="system-tray">
 
-                <span>📶</span>
 
-                <span>🔊</span>
+<!-- Taskbar -->
 
-                <span id="clock">
-                    00:00
-                </span>
 
-            </div>
+<footer id="taskbar">
 
-        </footer>
 
-    </main>
+    <div id="start-button">
+        ⊞
+    </div>
 
-    <!-- ========================= -->
-    <!-- Start Menu -->
-    <!-- ========================= -->
 
-    <aside id="start-menu" hidden>
+    <div id="taskbar-apps"></div>
 
-        <h3>PolashOS</h3>
 
-        <ul>
 
-            <li>🌐 Polaris Browser</li>
+    <div id="system-tray">
 
-            <li>📁 Atlas Files</li>
 
-            <li>💻 Nova Terminal</li>
+        <span>
+            📶
+        </span>
 
-            <li>⚙️ Control Center</li>
 
-        </ul>
+        <span>
+            🔊
+        </span>
 
-    </aside>
 
-    <script src="script.js"></script>
+        <span id="clock">
+            00:00
+        </span>
+
+
+    </div>
+
+
+</footer>
+
+
+
+</main>
+
+
+
+
+
+<!-- ========================= -->
+<!-- Start Menu -->
+<!-- ========================= -->
+
+
+<aside id="start-menu" hidden>
+
+
+    <h3>
+        PolashOS
+    </h3>
+
+
+
+    <ul>
+
+
+        <li>
+            🌐 Polaris Browser
+        </li>
+
+
+        <li>
+            📁 Atlas Files
+        </li>
+
+
+        <li>
+            💻 Nova Terminal
+        </li>
+
+
+        <li>
+            ⚙️ Control Center
+        </li>
+
+
+    </ul>
+
+
+</aside>
+
+
+
+
+<script src="script.js"></script>
+
 
 </body>
 
