@@ -1,7 +1,6 @@
 /* ==========================================
-   PolashOS - Core Script v4
-   Mobile Single Click Support
-   Window Manager Integration
+   PolashOS - Core Script v5
+   Mobile Single Click Working Version
    ========================================== */
 
 
@@ -41,24 +40,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
     /* ==========================
        Boot System
     ========================== */
 
 
-    function bootSystem() {
+    function bootSystem(){
+
+        if(bootProgress){
+
+            bootProgress.style.width = "100%";
+
+        }
 
 
-        bootProgress.style.width = "100%";
-
-
-        setTimeout(() => {
+        setTimeout(()=>{
 
 
             bootScreen.style.opacity = "0";
 
 
-            setTimeout(() => {
+            setTimeout(()=>{
 
 
                 bootScreen.style.display = "none";
@@ -66,11 +69,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 lockScreen.hidden = false;
 
 
-            }, 800);
+            },800);
 
 
 
-        }, 2500);
+        },2500);
 
 
     }
@@ -80,19 +83,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================
-       Unlock
+       Unlock Desktop
     ========================== */
 
 
-    unlockBtn.addEventListener("click", () => {
+    unlockBtn.addEventListener("click",()=>{
 
 
-        lockScreen.style.display = "none";
+        lockScreen.style.display="none";
 
-        desktop.style.display = "block";
+        desktop.style.display="block";
 
 
     });
+
 
 
 
@@ -104,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================== */
 
 
-    startButton.addEventListener("click", () => {
+    startButton.addEventListener("click",()=>{
 
 
         startMenu.hidden = !startMenu.hidden;
@@ -123,18 +127,22 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================== */
 
 
-    function updateClock() {
+    function updateClock(){
 
 
         const now = new Date();
 
 
-        const hours = String(now.getHours()).padStart(2, "0");
+        const hours =
+        String(now.getHours()).padStart(2,"0");
 
-        const minutes = String(now.getMinutes()).padStart(2, "0");
+
+        const minutes =
+        String(now.getMinutes()).padStart(2,"0");
 
 
-        clock.textContent = `${hours}:${minutes}`;
+        clock.textContent =
+        `${hours}:${minutes}`;
 
 
     }
@@ -142,27 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateClock();
 
-
-    setInterval(updateClock, 1000);
-
-
-
-
-
-
-
-    /* ==========================
-       Register Windows
-    ========================== */
-
-
-    windowManager.register("browser-window");
-
-    windowManager.register("files-window");
-
-    windowManager.register("terminal-window");
-
-    windowManager.register("control-window");
+    setInterval(updateClock,1000);
 
 
 
@@ -171,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================
-       App Icons
+       App Windows
        Mobile Single Click
     ========================== */
 
@@ -180,26 +168,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         {
-            icon: "browserIcon",
-            window: "browser-window"
+            icon:"browserIcon",
+            window:"browser-window"
         },
 
 
         {
-            icon: "filesIcon",
-            window: "files-window"
+            icon:"filesIcon",
+            window:"files-window"
         },
 
 
         {
-            icon: "terminalIcon",
-            window: "terminal-window"
+            icon:"terminalIcon",
+            window:"terminal-window"
         },
 
 
         {
-            icon: "controlIcon",
-            window: "control-window"
+            icon:"controlIcon",
+            window:"control-window"
         }
 
 
@@ -209,29 +197,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-    apps.forEach(app => {
-
-
-        const icon = document.getElementById(app.icon);
+    apps.forEach(app=>{
 
 
-
-        if (icon) {
-
-
-            icon.addEventListener("click", () => {
+        const icon =
+        document.getElementById(app.icon);
 
 
-                windowManager.open(app.window);
+        const appWindow =
+        document.getElementById(app.window);
+
+
+
+        if(icon && appWindow){
+
+
+            icon.addEventListener("click",()=>{
+
+
+                appWindow.hidden=false;
 
 
             });
 
 
-
         }
-
 
 
     });
@@ -243,7 +233,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==========================
-       Boot Start
+       Close Windows
+    ========================== */
+
+
+    document.querySelectorAll(".window-close")
+    .forEach(button=>{
+
+
+        button.addEventListener("click",()=>{
+
+
+            const windowBox =
+            button.closest(".polash-window");
+
+
+            if(windowBox){
+
+                windowBox.hidden=true;
+
+            }
+
+
+        });
+
+
+    });
+
+
+
+
+
+
+
+    /* ==========================
+       Start Boot
     ========================== */
 
 
