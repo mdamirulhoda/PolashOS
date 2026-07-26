@@ -98,6 +98,32 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateClock, 1000);
 
     /* ==========================
+       Browser Window
+    ========================== */
+
+    const browserIcon = document.getElementById("browserIcon");
+
+    const browserWindow = document.getElementById("browser-window");
+
+    const closeBrowser = document.getElementById("closeBrowser");
+
+    if (browserIcon && browserWindow && closeBrowser) {
+
+        browserIcon.addEventListener("dblclick", () => {
+
+            browserWindow.hidden = false;
+
+        });
+
+        closeBrowser.addEventListener("click", () => {
+
+            browserWindow.hidden = true;
+
+        });
+
+    }
+
+    /* ==========================
        Boot Start
     ========================== */
 
