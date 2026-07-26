@@ -1,6 +1,6 @@
 /* ==========================================
-   PolashOS Window Manager v2
-   Core Engine + Interaction
+   PolashOS Window Manager v3
+   Core Engine + Drag + Resize
    ========================================== */
 
 class WindowManager {
@@ -26,13 +26,19 @@ class WindowManager {
 
         }
 
+
         this.windows[id] = element;
+
 
         this.setupControls(element, id);
 
         this.makeDraggable(element);
 
+        this.makeResizable(element);
+
+
     }
+
 
 
     open(id) {
@@ -41,11 +47,16 @@ class WindowManager {
 
         if (!win) return;
 
+
         win.hidden = false;
+
+        win.style.display = "block";
+
 
         this.focus(id);
 
     }
+
 
 
     close(id) {
@@ -54,9 +65,11 @@ class WindowManager {
 
         if (!win) return;
 
+
         win.hidden = true;
 
     }
+
 
 
     toggle(id) {
@@ -79,11 +92,13 @@ class WindowManager {
     }
 
 
+
     focus(id) {
 
         const win = this.windows[id];
 
         if (!win) return;
+
 
         this.zIndex++;
 
@@ -93,18 +108,26 @@ class WindowManager {
 
 
 
+
     /* ==========================================
        Window Controls
        ========================================== */
 
+
     setupControls(element, id) {
 
 
-        const closeBtn = element.querySelector(".window-close");
+        const closeBtn =
+        element.querySelector(".window-close");
 
-        const minimizeBtn = element.querySelector(".window-minimize");
 
-        const maximizeBtn = element.querySelector(".window-maximize");
+        const minimizeBtn =
+        element.querySelector(".window-minimize");
+
+
+        const maximizeBtn =
+        element.querySelector(".window-maximize");
+
 
 
 
@@ -147,6 +170,8 @@ class WindowManager {
 
 
 
+
+
     /* ==========================================
        Drag System
        ========================================== */
@@ -155,7 +180,8 @@ class WindowManager {
     makeDraggable(element) {
 
 
-        const bar = element.querySelector(".polash-titlebar");
+        const bar =
+        element.querySelector(".polash-titlebar");
 
 
         if (!bar) return;
@@ -176,17 +202,20 @@ class WindowManager {
             dragging = true;
 
 
-            offsetX = e.clientX - element.offsetLeft;
+            offsetX =
+            e.clientX - element.offsetLeft;
 
-            offsetY = e.clientY - element.offsetTop;
+
+            offsetY =
+            e.clientY - element.offsetTop;
 
 
-            this.zIndex++;
 
-            element.style.zIndex = this.zIndex;
+            this.focus(element.id);
 
 
         });
+
 
 
 
@@ -197,16 +226,17 @@ class WindowManager {
 
 
 
-            element.style.left = 
+            element.style.left =
             `${e.clientX - offsetX}px`;
 
 
 
-            element.style.top = 
+            element.style.top =
             `${e.clientY - offsetY}px`;
 
 
         });
+
 
 
 
@@ -220,6 +250,122 @@ class WindowManager {
 
 
     }
+
+
+
+
+
+    /* ==========================================
+       Resize System
+       ========================================== */
+
+
+    makeResizable(element) {
+
+
+        const handle =
+        element.querySelector(".resize-handle");
+
+
+        if (!handle) return;
+
+
+
+        let resizing = false;
+
+        let startX;
+
+        let startY;
+
+        let startWidth;
+
+        let startHeight;
+
+
+
+
+        handle.addEventListener("mousedown", (e) => {
+
+
+            e.preventDefault();
+
+
+            resizing = true;
+
+
+
+            startX = e.clientX;
+
+            startY = e.clientY;
+
+
+            startWidth =
+            element.offsetWidth;
+
+
+            startHeight =
+            element.offsetHeight;
+
+
+
+        });
+
+
+
+
+
+        document.addEventListener("mousemove", (e) => {
+
+
+            if (!resizing) return;
+
+
+
+            const newWidth =
+            startWidth + (e.clientX - startX);
+
+
+
+            const newHeight =
+            startHeight + (e.clientY - startY);
+
+
+
+
+            if (newWidth > 300) {
+
+                element.style.width =
+                `${newWidth}px`;
+
+            }
+
+
+
+            if (newHeight > 200) {
+
+                element.style.height =
+                `${newHeight}px`;
+
+            }
+
+
+        });
+
+
+
+
+
+        document.addEventListener("mouseup", () => {
+
+
+            resizing = false;
+
+
+        });
+
+
+    }
+
 
 
 }
