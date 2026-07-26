@@ -1,5 +1,5 @@
 /* ==========================================
-   PolashOS Window Manager v2
+   PolashOS Window Manager v3
    Part 1
 ========================================== */
 
@@ -13,6 +13,9 @@ class WindowManager {
 
         this.zIndex = 100;
 
+        this.taskbarApps =
+        document.getElementById("taskbar-apps");
+
     }
 
     /* ==========================
@@ -21,7 +24,8 @@ class WindowManager {
 
     register(id) {
 
-        const win = document.getElementById(id);
+        const win =
+        document.getElementById(id);
 
         if (!win) {
 
@@ -55,6 +59,8 @@ class WindowManager {
 
         this.focus(id);
 
+        this.addTaskbarApp(id);
+
     }
 
     /* ==========================
@@ -68,6 +74,8 @@ class WindowManager {
         if (!win) return;
 
         win.hidden = true;
+
+        this.removeTaskbarApp(id);
 
     }
 
@@ -85,7 +93,68 @@ class WindowManager {
 
         win.style.zIndex = ++this.zIndex;
 
-           }
+    }
+
+    /* ==========================
+       Taskbar Apps
+    ========================== */
+
+    addTaskbarApp(id) {
+
+        if (!this.taskbarApps) return;
+
+        if (document.getElementById(`task-${id}`)) {
+
+            return;
+
+        }
+
+        const button = document.createElement("button");
+
+        button.id = `task-${id}`;
+
+        button.className = "taskbar-app";
+
+        const title =
+            this.windows[id]
+            .querySelector(".window-titlebar span")
+            ?.textContent || id;
+
+        button.textContent = title;
+
+        button.addEventListener("click", () => {
+
+            const win = this.windows[id];
+
+            if (!win) return;
+
+            if (win.hidden) {
+
+                this.open(id);
+
+            } else {
+
+                this.focus(id);
+
+            }
+
+        });
+
+        this.taskbarApps.appendChild(button);
+
+    }
+
+    removeTaskbarApp(id) {
+
+        const button = document.getElementById(`task-${id}`);
+
+        if (button) {
+
+            button.remove();
+
+        }
+
+    }
 
     /* ==========================
        Drag System
@@ -154,7 +223,7 @@ class WindowManager {
     }
 
     /* ==========================
-       Register Drag Automatically
+       Initialize
     ========================== */
 
     initialize() {
@@ -177,7 +246,7 @@ const windowManager = new WindowManager();
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const windows = [
+    [
 
         "browser-window",
 
@@ -187,9 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         "control-window"
 
-    ];
-
-    windows.forEach(id => {
+    ].forEach(id => {
 
         windowManager.register(id);
 
