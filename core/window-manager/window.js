@@ -1,9 +1,11 @@
 /* ==========================================
    PolashOS Window Manager v3
-   Core Engine + Drag + Resize
+   Professional Window Engine
    ========================================== */
 
+
 class WindowManager {
+
 
     constructor() {
 
@@ -14,15 +16,26 @@ class WindowManager {
     }
 
 
+
+
+    /* ==========================
+       Register Window
+    ========================== */
+
+
     register(id) {
+
 
         const element = document.getElementById(id);
 
+
         if (!element) {
+
 
             console.warn(`Window not found: ${id}`);
 
             return;
+
 
         }
 
@@ -41,9 +54,20 @@ class WindowManager {
 
 
 
+
+
+
+
+    /* ==========================
+       Open Window
+    ========================== */
+
+
     open(id) {
 
+
         const win = this.windows[id];
+
 
         if (!win) return;
 
@@ -55,66 +79,76 @@ class WindowManager {
 
         this.focus(id);
 
+
     }
 
 
 
+
+
+
+
+    /* ==========================
+       Close Window
+    ========================== */
+
+
     close(id) {
 
+
         const win = this.windows[id];
+
 
         if (!win) return;
 
 
         win.hidden = true;
 
-    }
-
-
-
-    toggle(id) {
-
-        const win = this.windows[id];
-
-        if (!win) return;
-
-
-        if (win.hidden) {
-
-            this.open(id);
-
-        } else {
-
-            this.close(id);
-
-        }
 
     }
 
+
+
+
+
+
+
+    /* ==========================
+       Focus Window
+    ========================== */
 
 
     focus(id) {
 
+
         const win = this.windows[id];
+
 
         if (!win) return;
 
 
         this.zIndex++;
 
+
         win.style.zIndex = this.zIndex;
+
 
     }
 
 
 
 
-    /* ==========================================
+
+
+
+
+    /* ==========================
        Window Controls
-       ========================================== */
+    ========================== */
 
 
     setupControls(element, id) {
+
 
 
         const closeBtn =
@@ -131,37 +165,57 @@ class WindowManager {
 
 
 
+
         if (closeBtn) {
+
 
             closeBtn.onclick = () => {
 
+
                 this.close(id);
+
 
             };
 
+
         }
+
+
+
 
 
 
         if (minimizeBtn) {
 
+
             minimizeBtn.onclick = () => {
+
 
                 element.style.display = "none";
 
+
             };
+
 
         }
 
 
 
+
+
+
+
         if (maximizeBtn) {
+
 
             maximizeBtn.onclick = () => {
 
+
                 element.classList.toggle("maximized");
 
+
             };
+
 
         }
 
@@ -172,38 +226,57 @@ class WindowManager {
 
 
 
-    /* ==========================================
+
+
+
+
+    /* ==========================
        Drag System
-       ========================================== */
+    ========================== */
 
 
     makeDraggable(element) {
 
 
+
         const bar =
-        element.querySelector(".polash-titlebar");
+        element.querySelector(".window-titlebar");
+
 
 
         if (!bar) return;
 
 
 
+
+        let dragging = false;
+
         let offsetX = 0;
 
         let offsetY = 0;
 
-        let dragging = false;
+
+
 
 
 
         bar.addEventListener("mousedown", (e) => {
 
 
+
             dragging = true;
+
+
+
+            this.focus(
+                element.id
+            );
+
 
 
             offsetX =
             e.clientX - element.offsetLeft;
+
 
 
             offsetY =
@@ -211,15 +284,15 @@ class WindowManager {
 
 
 
-            this.focus(element.id);
-
-
         });
 
 
 
 
+
+
         document.addEventListener("mousemove", (e) => {
+
 
 
             if (!dragging) return;
@@ -235,7 +308,11 @@ class WindowManager {
             `${e.clientY - offsetY}px`;
 
 
+
         });
+
+
+
 
 
 
@@ -255,19 +332,32 @@ class WindowManager {
 
 
 
-    /* ==========================================
+
+
+
+
+    /* ==========================
        Resize System
-       ========================================== */
+    ========================== */
 
 
     makeResizable(element) {
 
 
-        const handle =
-        element.querySelector(".resize-handle");
+
+        const resizeHandle =
+        document.createElement("div");
 
 
-        if (!handle) return;
+
+        resizeHandle.className =
+        "resize-handle";
+
+
+
+        element.appendChild(resizeHandle);
+
+
 
 
 
@@ -284,10 +374,10 @@ class WindowManager {
 
 
 
-        handle.addEventListener("mousedown", (e) => {
 
 
-            e.preventDefault();
+        resizeHandle.addEventListener("mousedown", (e) => {
+
 
 
             resizing = true;
@@ -299,8 +389,10 @@ class WindowManager {
             startY = e.clientY;
 
 
+
             startWidth =
             element.offsetWidth;
+
 
 
             startHeight =
@@ -308,7 +400,13 @@ class WindowManager {
 
 
 
+            e.stopPropagation();
+
+
+
         });
+
+
 
 
 
@@ -317,39 +415,25 @@ class WindowManager {
         document.addEventListener("mousemove", (e) => {
 
 
+
             if (!resizing) return;
 
 
 
-            const newWidth =
-            startWidth + (e.clientX - startX);
+
+            element.style.width =
+            `${startWidth + (e.clientX - startX)}px`;
 
 
 
-            const newHeight =
-            startHeight + (e.clientY - startY);
+            element.style.height =
+            `${startHeight + (e.clientY - startY)}px`;
 
-
-
-
-            if (newWidth > 300) {
-
-                element.style.width =
-                `${newWidth}px`;
-
-            }
-
-
-
-            if (newHeight > 200) {
-
-                element.style.height =
-                `${newHeight}px`;
-
-            }
 
 
         });
+
+
 
 
 
@@ -358,10 +442,13 @@ class WindowManager {
         document.addEventListener("mouseup", () => {
 
 
+
             resizing = false;
 
 
+
         });
+
 
 
     }
@@ -372,8 +459,11 @@ class WindowManager {
 
 
 
+
+
+
 /* ==========================================
-   Global Instance
+   Global Window Manager
    ========================================== */
 
 
