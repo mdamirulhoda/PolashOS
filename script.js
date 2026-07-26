@@ -1,278 +1,87 @@
-/* ==========================================
-   PolashOS - Core Script v5
-   Mobile Single Click Working Version
-   ========================================== */
-
-
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Boot Screen Handling (hides boot screen after 2.5 seconds)
+    setTimeout(() => {
+        const bootScreen = document.getElementById("boot-screen");
+        const lockScreen = document.getElementById("lock-screen");
+        
+        if (bootScreen) bootScreen.style.display = "none";
+        if (lockScreen) lockScreen.hidden = false;
+    }, 2500);
 
-
-    /* ==========================
-       Elements
-    ========================== */
-
-
-    const bootScreen = document.getElementById("boot-screen");
-    const bootProgress = document.querySelector(".boot-progress");
-
-    const lockScreen = document.getElementById("lock-screen");
+    // 2. Lock Screen Unlock Handling
     const unlockBtn = document.getElementById("unlockBtn");
-
+    const lockScreen = document.getElementById("lock-screen");
     const desktop = document.getElementById("desktop");
 
+    if (unlockBtn) {
+        unlockBtn.addEventListener("click", () => {
+            if (lockScreen) lockScreen.hidden = true;
+            // Desktop is main tag, ensure it's visible if hidden
+            if (desktop) desktop.style.display = "block";
+        });
+    }
+
+    // 3. Clock Update in System Tray
+    function updateClock() {
+        const clockSpan = document.getElementById("clock");
+        if (clockSpan) {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            clockSpan.textContent = `${hours}:${minutes}`;
+        }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 4. Start Menu Toggle
     const startButton = document.getElementById("start-button");
     const startMenu = document.getElementById("start-menu");
 
-    const clock = document.getElementById("clock");
-
-
-
-    /* ==========================
-       Initial State
-    ========================== */
-
-
-    desktop.style.display = "none";
-
-    lockScreen.hidden = true;
-
-    startMenu.hidden = true;
-
-
-
-
-    /* ==========================
-       Boot System
-    ========================== */
-
-
-    function bootSystem(){
-
-        if(bootProgress){
-
-            bootProgress.style.width = "100%";
-
-        }
-
-
-        setTimeout(()=>{
-
-
-            bootScreen.style.opacity = "0";
-
-
-            setTimeout(()=>{
-
-
-                bootScreen.style.display = "none";
-
-                lockScreen.hidden = false;
-
-
-            },800);
-
-
-
-        },2500);
-
-
-    }
-
-
-
-
-
-    /* ==========================
-       Unlock Desktop
-    ========================== */
-
-
-    unlockBtn.addEventListener("click",()=>{
-
-
-        lockScreen.style.display="none";
-
-        desktop.style.display="block";
-
-
-    });
-
-
-
-
-
-
-
-    /* ==========================
-       Start Menu
-    ========================== */
-
-
-    startButton.addEventListener("click",()=>{
-
-
-        startMenu.hidden = !startMenu.hidden;
-
-
-    });
-
-
-
-
-
-
-
-    /* ==========================
-       Clock
-    ========================== */
-
-
-    function updateClock(){
-
-
-        const now = new Date();
-
-
-        const hours =
-        String(now.getHours()).padStart(2,"0");
-
-
-        const minutes =
-        String(now.getMinutes()).padStart(2,"0");
-
-
-        clock.textContent =
-        `${hours}:${minutes}`;
-
-
-    }
-
-
-    updateClock();
-
-    setInterval(updateClock,1000);
-
-
-
-
-
-
-
-    /* ==========================
-       App Windows
-       Mobile Single Click
-    ========================== */
-
-
-    const apps = [
-
-
-        {
-            icon:"browserIcon",
-            window:"browser-window"
-        },
-
-
-        {
-            icon:"filesIcon",
-            window:"files-window"
-        },
-
-
-        {
-            icon:"terminalIcon",
-            window:"terminal-window"
-        },
-
-
-        {
-            icon:"controlIcon",
-            window:"control-window"
-        }
-
-
-    ];
-
-
-
-
-
-    apps.forEach(app=>{
-
-
-        const icon =
-        document.getElementById(app.icon);
-
-
-        const appWindow =
-        document.getElementById(app.window);
-
-
-
-        if(icon && appWindow){
-
-
-            icon.addEventListener("click",()=>{
-
-
-                appWindow.hidden=false;
-
-
-            });
-
-
-        }
-
-
-    });
-
-
-
-
-
-
-
-    /* ==========================
-       Close Windows
-    ========================== */
-
-
-    document.querySelectorAll(".window-close")
-    .forEach(button=>{
-
-
-        button.addEventListener("click",()=>{
-
-
-            const windowBox =
-            button.closest(".polash-window");
-
-
-            if(windowBox){
-
-                windowBox.hidden=true;
-
-            }
-
-
+    if (startButton && startMenu) {
+        startButton.addEventListener("click", (e) => {
+            e.stopPropagation();
+            startMenu.hidden = !startMenu.hidden;
         });
 
+        // Hide start menu when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!startMenu.contains(e.target) && !startButton.contains(e.target)) {
+                startMenu.hidden = true;
+            }
+        });
+    }
 
+    // 5. Open Windows from Desktop Icons
+    const appMapping = {
+        "browserIcon": "browser-window",
+        "filesIcon": "files-window",
+        "terminalIcon": "terminal-window",
+        "controlIcon": "control-window"
+    };
+
+    Object.keys(appMapping).forEach(iconId => {
+        const icon = document.getElementById(iconId);
+        const windowId = appMapping[iconId];
+        const winElem = document.getElementById(windowId);
+
+        if (icon && winElem) {
+            icon.addEventListener("click", () => {
+                winElem.hidden = false;
+                // Bring to front or reset position if needed
+            });
+        }
     });
 
-
-
-
-
-
-
-    /* ==========================
-       Start Boot
-    ========================== */
-
-
-    bootSystem();
-
-
-
+    // 6. Close Windows
+    document.querySelectorAll(".window-close").forEach(closeBtn => {
+        closeBtn.addEventListener("click", (e) => {
+            const win = e.target.closest(".polash-window");
+            if (win) {
+                win.hidden = true;
+            }
+        });
+    });
 });
