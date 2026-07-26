@@ -21,3 +21,28 @@
     cursor: grab;
     user-select: none;
 }
+
+.window-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+.window-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.window-close {
+    background: #ef4444;
+}
+
+.window-minimize {
+    background: #facc15;
+}
+
+.window-maximize {
+    background: #22c55e;
+}
