@@ -543,3 +543,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+// ==========================================
+// PolashOS WindowManager Compatibility Patch
+// ==========================================
+
+(function() {
+    if (typeof WindowManager === 'undefined' || !WindowManager.prototype) return;
+
+    const proto = WindowManager.prototype;
+
+    // Map expected module method names to existing WindowManager public methods
+    if (typeof proto.open === 'function' && !proto.openWindow) {
+        proto.openWindow = proto.open;
+    }
+    if (typeof proto.close === 'function' && !proto.closeWindow) {
+        proto.closeWindow = proto.close;
+    }
+    if (typeof proto.focus === 'function' && !proto.focusWindow) {
+        proto.focusWindow = proto.focus;
+    }
+    if (typeof proto.minimize === 'function' && !proto.minimizeWindow) {
+        proto.minimizeWindow = proto.minimize;
+    }
+    if (typeof proto.restore === 'function' && !proto.restoreWindow) {
+        proto.restoreWindow = proto.restore;
+    }
+    if (typeof proto.maximize === 'function' && !proto.maximizeWindow) {
+        proto.maximizeWindow = proto.maximize;
+    }
+})();
+
+
