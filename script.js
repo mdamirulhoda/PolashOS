@@ -185,13 +185,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
-// আইকনে ক্লিক করার ফাংশন বা ইভেন্ট লিসেনার
-icon.addEventListener('click', () => {
-    // উইন্ডো ওপেন করার কোড...
-    const myWindow = document.getElementById('window-id'); 
-    myWindow.classList.remove('hidden'); // অথবা উইন্ডো অ্যাপেন্ড করার কোড
-
-    // **ঠিক এই জায়গাতে ফাংশনটি কল করে দিতে হবে:**
-    bringToFront(myWindow);
-});
-   
