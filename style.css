@@ -1132,7 +1132,7 @@ html{
 
 #taskbar::before{
 
-    content:"";
+    content:"`";
 
     position:absolute;
 
@@ -1207,4 +1207,5 @@ html{
 
     box-shadow:0 0 15px rgba(79,140,255,.45);
 
-}
+    }
+    
