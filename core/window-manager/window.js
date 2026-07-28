@@ -1,5 +1,5 @@
 /* ==========================================
-   PolashOS Window Manager v6 - Final Unified
+   PolashOS Window Manager v6 - Professional Final (v1.0)
 ========================================== */
 
 class WindowManager {
@@ -29,6 +29,8 @@ class WindowManager {
 
         element.style.position = "absolute";
         element.style.zIndex = ++this.zIndex;
+        element.style.left = "120px";
+        element.style.top = "80px";
     }
 
     /* ==========================
@@ -226,7 +228,7 @@ class WindowManager {
     }
 
     /* ==========================
-       Drag System
+       Drag System (Professional Final v1.0)
     ========================== */
     makeDraggable(id) {
         const windowData = this.get(id);
@@ -236,27 +238,99 @@ class WindowManager {
         const titlebar = win.querySelector(".window-titlebar");
         if (!titlebar) return;
 
-        let dragging = false;
-        let offsetX = 0;
-        let offsetY = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let initialX = 0;
+        let initialY = 0;
+        let rafId = null;
 
         titlebar.addEventListener("mousedown", (e) => {
-            dragging = true;
+
+            // শুধুমাত্র লেফট ক্লিক (0) চেক করা
+            if (e.button !== 0) return;
+
+            if (e.target.closest("button")) return;
+
             this.focus(id);
-            offsetX = e.clientX - win.offsetLeft;
-            offsetY = e.clientY - win.offsetTop;
+
+            isDragging = true;
+
+            startX = e.clientX;
+            startY = e.clientY;
+
+            const rect = win.getBoundingClientRect();
+
+            initialX = rect.left;
+            initialY = rect.top;
+
+            win.style.transition = "none";
+            win.style.willChange = "left, top";
+
             document.body.style.userSelect = "none";
-        });
+            document.body.style.cursor = "grabbing";
 
-        document.addEventListener("mousemove", (e) => {
-            if (!dragging) return;
-            win.style.left = `${e.clientX - offsetX}px`;
-            win.style.top = `${e.clientY - offsetY}px`;
-        });
+            const onMouseMove = (e) => {
 
-        document.addEventListener("mouseup", () => {
-            dragging = false;
-            document.body.style.userSelect = "";
+                if (!isDragging) return;
+
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                if (rafId) cancelAnimationFrame(rafId);
+
+                rafId = requestAnimationFrame(() => {
+
+                    const taskbar = document.getElementById("taskbar");
+                    const taskbarHeight = taskbar ? taskbar.offsetHeight : 48;
+
+                    const newLeft = Math.max(
+                        0,
+                        Math.min(window.innerWidth - win.offsetWidth, initialX + dx)
+                    );
+
+                    const newTop = Math.max(
+                        0,
+                        Math.min(
+                            window.innerHeight - win.offsetHeight - taskbarHeight,
+                            initialY + dy
+                        )
+                    );
+
+                    win.style.left = newLeft + "px";
+                    win.style.top = newTop + "px";
+                    win.style.transform = "none";
+
+                });
+
+            };
+
+            const onMouseUp = () => {
+
+                isDragging = false;
+
+                document.body.style.userSelect = "";
+                document.body.style.cursor = "";
+
+                document.removeEventListener("mousemove", onMouseMove);
+                document.removeEventListener("mouseup", onMouseUp);
+
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+
+                win.style.willChange = "";
+
+                requestAnimationFrame(() => {
+                    win.style.transition = "";
+                });
+
+            };
+
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+
         });
     }
 
@@ -354,3 +428,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+               
