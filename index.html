@@ -128,20 +128,20 @@
     <!-- Polaris Browser -->
 
     <div id="browser-window"
-         class="window"
+         class="polash-window"
          hidden>
 
-        <div class="window-titlebar">
+        <div class="polash-titlebar window-titlebar">
 
             <span>🌐 Polaris Browser</span>
 
             <div class="window-controls">
 
-                <button class="window-minimize">—</button>
+                <button class="window-btn window-minimize"></button>
 
-                <button class="window-maximize">□</button>
+                <button class="window-btn window-maximize"></button>
 
-                <button class="window-close">✕</button>
+                <button class="window-btn window-close"></button>
 
             </div>
 
@@ -149,39 +149,73 @@
 
         <div class="window-content">
 
-            <h2>Welcome to Polaris Browser</h2>
+            <div class="browser-toolbar">
 
-            <p>
-                This is the first application inside PolashOS.
-            </p>
+                <div class="browser-nav">
+
+                    <button id="browser-back">←</button>
+
+                    <button id="browser-forward">→</button>
+
+                    <button id="browser-refresh">⟳</button>
+
+                    <button id="browser-home">⌂</button>
+
+                </div>
+
+                <input
+                    type="text"
+                    id="browser-address"
+                    placeholder="Search or enter website">
+
+            </div>
+
+            <div class="browser-tabs">
+
+                <div class="browser-tab active">
+                    New Tab
+                </div>
+
+            </div>
+
+            <div class="browser-view">
+
+                <iframe
+                    id="browser-frame"
+                    src="about:blank">
+                </iframe>
+
+            </div>
 
         </div>
+
+        <div class="resize-handle"></div>
 
     </div>
 
     <!-- Atlas Files -->
 
     <div id="files-window"
-         class="window"
+         class="polash-window"
          hidden>
 
-        <div class="window-titlebar">
+        <div class="polash-titlebar window-titlebar">
 
             <span>📁 Atlas Files</span>
 
             <div class="window-controls">
 
-                <button class="window-minimize">—</button>
+                <button class="window-btn window-minimize"></button>
 
-                <button class="window-maximize">□</button>
+                <button class="window-btn window-maximize"></button>
 
-                <button class="window-close">✕</button>
+                <button class="window-btn window-close"></button>
 
             </div>
 
         </div>
 
-        <div class="window-content">
+        <div class="polash-content window-content">
 
             <h2>Atlas Files</h2>
 
@@ -189,31 +223,33 @@
 
         </div>
 
+        <div class="resize-handle"></div>
+
     </div>
 
     <!-- Nova Terminal -->
 
     <div id="terminal-window"
-         class="window"
+         class="polash-window"
          hidden>
 
-        <div class="window-titlebar">
+        <div class="polash-titlebar window-titlebar">
 
             <span>💻 Nova Terminal</span>
 
             <div class="window-controls">
 
-                <button class="window-minimize">—</button>
+                <button class="window-btn window-minimize"></button>
 
-                <button class="window-maximize">□</button>
+                <button class="window-btn window-maximize"></button>
 
-                <button class="window-close">✕</button>
+                <button class="window-btn window-close"></button>
 
             </div>
 
         </div>
 
-        <div class="window-content">
+        <div class="polash-content window-content">
 
             <h2>Nova Terminal</h2>
 
@@ -221,37 +257,41 @@
 
         </div>
 
+        <div class="resize-handle"></div>
+
     </div>
 
     <!-- Control Center -->
 
     <div id="control-window"
-         class="window"
+         class="polash-window"
          hidden>
 
-        <div class="window-titlebar">
+        <div class="polash-titlebar window-titlebar">
 
             <span>⚙️ Control Center</span>
 
             <div class="window-controls">
 
-                <button class="window-minimize">—</button>
+                <button class="window-btn window-minimize"></button>
 
-                <button class="window-maximize">□</button>
+                <button class="window-btn window-maximize"></button>
 
-                <button class="window-close">✕</button>
+                <button class="window-btn window-close"></button>
 
             </div>
 
         </div>
 
-        <div class="window-content">
+        <div class="polash-content window-content">
 
             <h2>Control Center</h2>
 
             <p>System Settings will appear here.</p>
 
         </div>
+
+        <div class="resize-handle"></div>
 
     </div>
 
