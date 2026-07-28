@@ -357,3 +357,43 @@ openAddress = function(value){
     saveHistory(browserFrame.src);
 
 };
+/* ==========================================
+   Polaris Browser Bookmarks Engine v4
+========================================== */
+
+const bookmarkBtn = document.getElementById("browser-bookmark");
+
+let browserBookmarks =
+JSON.parse(localStorage.getItem("polaris-bookmarks")) || [];
+
+if(bookmarkBtn){
+
+    bookmarkBtn.addEventListener("click",()=>{
+
+        const url = browserFrame.src;
+
+        if(
+            !url ||
+            url === "about:blank"
+        ) return;
+
+        if(!browserBookmarks.includes(url)){
+
+            browserBookmarks.push(url);
+
+            localStorage.setItem(
+                "polaris-bookmarks",
+                JSON.stringify(browserBookmarks)
+            );
+
+            alert("⭐ Bookmark Saved");
+
+        }else{
+
+            alert("⭐ Already Bookmarked");
+
+        }
+
+    });
+
+}
