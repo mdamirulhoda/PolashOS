@@ -397,3 +397,25 @@ if(bookmarkBtn){
     });
 
 }
+/* ==========================================
+   Polaris Browser Downloads Engine v5
+========================================== */
+
+const downloadsBtn =
+document.getElementById("browser-downloads");
+
+if(downloadsBtn){
+
+    downloadsBtn.addEventListener("click",()=>{
+
+        alert(
+`📥 Downloads
+
+No downloads yet.
+
+(Download Manager will be added in v6)`
+        );
+
+    });
+
+}
