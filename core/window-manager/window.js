@@ -1,6 +1,5 @@
 /* ==========================================
-   PolashOS Window Manager v6
-   Complete Unified Version
+   PolashOS Window Manager v6 - Final Unified
 ========================================== */
 
 class WindowManager {
@@ -302,7 +301,7 @@ class WindowManager {
 ========================================== */
 
 const windowManager = new WindowManager();
-window.windowManager = windowManager; // গ্লোবালি বাইন্ড করা হলো
+window.windowManager = windowManager;
 
 document.addEventListener("DOMContentLoaded", () => {
     [
@@ -315,4 +314,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     windowManager.initialize();
+});
+
+/* ==========================================
+   PolashOS Smart Click / Touch Event Handler
+========================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const eventType = isTouchDevice ? "click" : "dblclick";
+
+    [
+        "browserIcon",
+        "filesIcon",
+        "terminalIcon",
+        "controlIcon"
+    ].forEach(iconId => {
+
+        const icon = document.getElementById(iconId);
+
+        if (!icon) return;
+
+        icon.addEventListener(eventType, () => {
+
+            const map = {
+                browserIcon: "browser-window",
+                filesIcon: "files-window",
+                terminalIcon: "terminal-window",
+                controlIcon: "control-window"
+            };
+
+            if (window.windowManager) {
+                window.windowManager.toggle(map[iconId]);
+            }
+
+        });
+
+    });
+
 });
