@@ -185,3 +185,98 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+/* ==========================================
+   Polaris Browser Engine v1
+========================================== */
+
+const browserFrame = document.getElementById("browser-frame");
+const browserAddress = document.getElementById("browser-address");
+
+const browserBack = document.getElementById("browser-back");
+const browserForward = document.getElementById("browser-forward");
+const browserRefresh = document.getElementById("browser-refresh");
+const browserHome = document.getElementById("browser-home");
+
+function openAddress(value){
+
+    if(!value) return;
+
+    value = value.trim();
+
+    if(
+        value.startsWith("http://") ||
+        value.startsWith("https://")
+    ){
+
+        browserFrame.src = value;
+
+    }else if(value.includes(".")){
+
+        browserFrame.src = "https://" + value;
+
+    }else{
+
+        browserFrame.src =
+        "https://www.google.com/search?q=" +
+        encodeURIComponent(value);
+
+    }
+
+}
+
+if(browserAddress){
+
+    browserAddress.addEventListener("keydown",(e)=>{
+
+        if(e.key==="Enter"){
+
+            openAddress(browserAddress.value);
+
+        }
+
+    });
+
+}
+
+if(browserHome){
+
+    browserHome.onclick=()=>{
+
+        browserFrame.src="about:blank";
+
+        browserAddress.value="";
+
+    };
+
+}
+
+if(browserRefresh){
+
+    browserRefresh.onclick=()=>{
+
+        browserFrame.contentWindow.location.reload();
+
+    };
+
+}
+
+if(browserBack){
+
+    browserBack.onclick=()=>{
+
+        browserFrame.contentWindow.history.back();
+
+    };
+
+}
+
+if(browserForward){
+
+    browserForward.onclick=()=>{
+
+        browserFrame.contentWindow.history.forward();
+
+    };
+
+}
