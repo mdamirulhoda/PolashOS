@@ -153,21 +153,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!icon) return;
 
-        const launchApp = () => {
+        icon.addEventListener("click", (e) => {
 
-            if (
-                window.windowManager &&
-                typeof window.windowManager.open === "function"
-            ) {
+            e.stopPropagation();
 
-                window.windowManager.open(windowId);
-
+            if (window.windowManager) {
+                if (typeof window.windowManager.toggle === "function") {
+                    window.windowManager.toggle(windowId);
+                } else if (typeof window.windowManager.open === "function") {
+                    window.windowManager.open(windowId);
+                }
+            } else {
+                console.warn("WindowManager not found globally!");
             }
 
-        };
-
-        icon.addEventListener("click", launchApp);
-        icon.addEventListener("dblclick", launchApp);
+        });
 
     });
 
