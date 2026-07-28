@@ -64,6 +64,9 @@ linear-gradient(135deg,var(--bg),var(--bg2));
 background-size:cover;
 background-repeat:no-repeat;
 background-position:center;
+position:fixed;
+width:100%;
+height:100%;
 
 }
 
@@ -209,11 +212,14 @@ Aurora Desktop
 
 #desktop{
 
-position:relative;  
+position:absolute;  
 
-width:100vw;  
+top:0;
+left:0;
 
-height:100vh;
+width:100%;  
+
+height:100%;
 
 overflow:hidden;
 
