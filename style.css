@@ -1257,4 +1257,35 @@ html{
     height:100%;
     border:none;
     background:white;
+}
+
+/* ==========================================
+   Polaris Browser Bookmarks
+========================================== */
+
+#browser-bookmark{
+
+    width:40px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#334155;
+
+    color:#ffd54a;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+}
+
+#browser-bookmark:hover{
+
+    background:#475569;
+
     }
+        
