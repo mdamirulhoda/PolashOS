@@ -326,3 +326,34 @@ if (newTabBtn) {
     });
 
 }
+
+/* ==========================================
+   Polaris Browser History v3
+========================================== */
+
+let browserHistory = [];
+
+function saveHistory(url){
+
+    if(!url) return;
+
+    browserHistory.unshift(url);
+
+    browserHistory = [...new Set(browserHistory)];
+
+    localStorage.setItem(
+        "polaris-history",
+        JSON.stringify(browserHistory)
+    );
+
+}
+
+const oldOpenAddress = openAddress;
+
+openAddress = function(value){
+
+    oldOpenAddress(value);
+
+    saveHistory(browserFrame.src);
+
+};
