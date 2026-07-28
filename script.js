@@ -280,3 +280,49 @@ if(browserForward){
     };
 
 }
+
+/* ==========================================
+   Polaris Browser Tabs v2
+========================================== */
+
+const newTabBtn = document.getElementById("new-tab-btn");
+const browserTabs = document.querySelector(".browser-tabs");
+
+let tabCount = 1;
+
+if (newTabBtn) {
+
+    newTabBtn.addEventListener("click", () => {
+
+        tabCount++;
+
+        const tab = document.createElement("div");
+
+        tab.className = "browser-tab";
+
+        tab.innerHTML = `🌐 Tab ${tabCount}`;
+
+        browserTabs.insertBefore(tab, newTabBtn);
+
+        document
+            .querySelectorAll(".browser-tab")
+            .forEach(t => t.classList.remove("active"));
+
+        tab.classList.add("active");
+
+        browserFrame.src = "about:blank";
+        browserAddress.value = "";
+
+        tab.addEventListener("click", () => {
+
+            document
+                .querySelectorAll(".browser-tab")
+                .forEach(t => t.classList.remove("active"));
+
+            tab.classList.add("active");
+
+        });
+
+    });
+
+}
