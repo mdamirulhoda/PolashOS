@@ -140,30 +140,34 @@ document.addEventListener("DOMContentLoaded", () => {
        Desktop Icons
     ========================== */
 
-    const apps = {
-
+    const appMapping = {
         browserIcon: "browser-window",
         filesIcon: "files-window",
         terminalIcon: "terminal-window",
         controlIcon: "control-window"
-
     };
 
-    Object.keys(apps).forEach(iconId => {
+    Object.entries(appMapping).forEach(([elementId, windowId]) => {
 
-        const icon = document.getElementById(iconId);
+        const icon = document.getElementById(elementId);
 
         if (!icon) return;
 
-        icon.addEventListener("dblclick", () => {
+        const launchApp = () => {
 
-            if (typeof windowManager !== "undefined") {
+            if (
+                window.windowManager &&
+                typeof window.windowManager.open === "function"
+            ) {
 
-                windowManager.open(apps[iconId]);
+                window.windowManager.open(windowId);
 
             }
 
-        });
+        };
+
+        icon.addEventListener("click", launchApp);
+        icon.addEventListener("dblclick", launchApp);
 
     });
 
@@ -171,9 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
        Initialize Window Manager
     ========================== */
 
-    if (typeof windowManager !== "undefined") {
+    if (
+        window.windowManager &&
+        typeof window.windowManager.initialize === "function"
+    ) {
 
-        windowManager.initialize();
+        window.windowManager.initialize();
 
     }
 
