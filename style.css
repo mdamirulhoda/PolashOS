@@ -1,5 +1,5 @@
 /* ==========================================
-PolashOS - Professional UI v1
+   PolashOS - Professional UI v1 & v2
 ========================================== */
 
 /* =========================
@@ -263,10 +263,6 @@ cursor:pointer;
 
 user-select:none;
 
-}
-
-.desktop-icon{
-
 font-size:42px;
 
 }
@@ -280,16 +276,14 @@ text-align:center;
 }
 
 /* =========================
-Window Area
+Window Area (Fixed)
 ========================= */
 
 #windows{
 
 position:absolute;  
 
-inset:0;  
-
-pointer-events:none;
+inset:0;
 
 }
 
@@ -317,11 +311,33 @@ justify-content:space-between;
 
 padding:0 20px;  
 
-background:var(--glass);  
+background:rgba(12,18,35,.55);  
 
-backdrop-filter:blur(18px);  
+backdrop-filter:blur(24px);  
 
-border-top:1px solid var(--border);
+-webkit-backdrop-filter:blur(24px);
+
+border-top:1px solid rgba(255,255,255,.12);
+
+box-shadow:0 -8px 30px rgba(0,0,0,.25);
+
+}
+
+#taskbar::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:1px;
+
+background:linear-gradient(90deg,transparent,rgba(79,140,255,.5),transparent);
 
 }
 
@@ -343,11 +359,15 @@ cursor:pointer;
 
 background:var(--glass2);  
 
-transition:.25s;
+transition:transform .25s ease, background .25s ease, box-shadow .25s ease;
 
 }
 
 #start-button:hover{
+
+background:rgba(255,255,255,.18);
+
+box-shadow:0 0 20px rgba(79,140,255,.35);
 
 transform:scale(1.08);
 
@@ -356,6 +376,16 @@ transform:scale(1.08);
 #taskbar-apps{
 
 flex:1;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:12px;
+
+padding:0 20px;
 
 }
 
@@ -366,6 +396,12 @@ display:flex;
 align-items:center;  
 
 gap:15px;
+
+padding:6px 12px;
+
+border-radius:14px;
+
+background:rgba(255,255,255,.05);
 
 }
 
@@ -393,6 +429,10 @@ border:1px solid var(--border);
 
 backdrop-filter:blur(25px);
 
+box-shadow:0 20px 50px rgba(0,0,0,.45);
+
+animation:startMenuOpen .22s ease;
+
 }
 
 #start-menu h3{
@@ -409,9 +449,21 @@ list-style:none;
 
 #start-menu li{
 
-padding:12px 0;  
+padding:12px 14px;  
 
 cursor:pointer;
+
+border-radius:12px;
+
+transition:background .2s ease, transform .2s ease;
+
+}
+
+#start-menu li:hover{
+
+background:rgba(255,255,255,.08);
+
+transform:translateX(6px);
 
 }
 
@@ -460,10 +512,10 @@ Responsive
 }
 
 /* ==========================================
-Application Window
+Application Window (Fixed to .polash-window)
 ========================================== */
 
-.window{
+.polash-window{
 
 position:absolute;  
 
@@ -473,7 +525,7 @@ left:160px;
 width:720px;  
 max-width:90%;  
 
-background:rgba(20,24,38,.88);  
+background:rgba(18,22,34,.88);  
 
 border:1px solid rgba(255,255,255,.12);  
 
@@ -481,11 +533,23 @@ border-radius:18px;
 
 overflow:hidden;  
 
-backdrop-filter:blur(18px);  
+backdrop-filter:blur(24px);  
+
+-webkit-backdrop-filter:blur(24px);
 
 box-shadow:0 20px 60px rgba(0,0,0,.45);  
 
 pointer-events:auto;
+
+animation:windowOpen .25s ease;
+
+transition:transform .25s ease, opacity .25s ease, box-shadow .25s ease;
+
+}
+
+.polash-window:hover{
+
+box-shadow:0 25px 70px rgba(0,0,0,.55);
 
 }
 
@@ -501,7 +565,7 @@ justify-content:space-between;
 
 padding:0 18px;  
 
-background:rgba(255,255,255,.05);  
+background:linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.03));  
 
 border-bottom:1px solid rgba(255,255,255,.08);  
 
@@ -555,6 +619,10 @@ min-height:320px;
 
 .window-content h2{
 
+font-size:24px;
+
+font-weight:600;
+
 margin-bottom:15px;
 
 }
@@ -563,32 +631,15 @@ margin-bottom:15px;
 
 color:var(--muted);  
 
-line-height:1.7;
+font-size:15px;
+
+line-height:1.8;
 
 }
 
 /* ==========================================
-   PolashOS UI v2
-   Window Animation Engine
+   Animations
 ========================================== */
-
-.window{
-
-    animation:windowOpen .25s ease;
-
-    transition:
-    transform .25s ease,
-    opacity .25s ease,
-    box-shadow .25s ease;
-
-}
-
-.window:hover{
-
-    box-shadow:
-    0 25px 70px rgba(0,0,0,.55);
-
-}
 
 @keyframes windowOpen{
 
@@ -596,9 +647,7 @@ line-height:1.7;
 
         opacity:0;
 
-        transform:
-        translateY(20px)
-        scale(.96);
+        transform:translateY(20px) scale(.96);
 
     }
 
@@ -606,67 +655,33 @@ line-height:1.7;
 
         opacity:1;
 
-        transform:
-        translateY(0)
-        scale(1);
+        transform:translateY(0) scale(1);
+
+    }
+
+}
+
+@keyframes startMenuOpen{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px) scale(.96);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0) scale(1);
 
     }
 
 }
 
 /* ==========================================
-   PolashOS UI v2
-   Glass Effects
-========================================== */
-
-.window{
-
-    background:
-    rgba(18,22,34,.88);
-
-    backdrop-filter:
-    blur(24px);
-
-    -webkit-backdrop-filter:
-    blur(24px);
-
-    border:
-    1px solid rgba(255,255,255,.12);
-
-    box-shadow:
-    0 20px 60px rgba(0,0,0,.45);
-
-}
-
-.window-titlebar{
-
-    background:
-    linear-gradient(
-        to bottom,
-        rgba(255,255,255,.08),
-        rgba(255,255,255,.03)
-    );
-
-}
-
-.window-content h2{
-
-    font-size:24px;
-
-    font-weight:600;
-
-}
-
-.window-content p{
-
-    font-size:15px;
-
-    line-height:1.8;
-
-}
-
-/* ==========================================
-   PolashOS UI v2
    Desktop Icon Effects
 ========================================== */
 
@@ -676,30 +691,23 @@ line-height:1.7;
 
     border-radius:16px;
 
-    transition:
-    transform .25s ease,
-    background .25s ease,
-    box-shadow .25s ease;
+    transition:transform .25s ease, background .25s ease, box-shadow .25s ease;
 
 }
 
 .desktop-icon:hover{
 
-    background:
-    rgba(255,255,255,.08);
+    background:rgba(255,255,255,.08);
 
-    transform:
-    translateY(-6px);
+    transform:translateY(-6px);
 
-    box-shadow:
-    0 12px 30px rgba(0,0,0,.35);
+    box-shadow:0 12px 30px rgba(0,0,0,.35);
 
 }
 
 .desktop-icon:active{
 
-    transform:
-    scale(.95);
+    transform:scale(.95);
 
 }
 
@@ -711,203 +719,7 @@ line-height:1.7;
 
     font-weight:500;
 
-    text-shadow:
-    0 1px 3px rgba(0,0,0,.5);
-
-}
-
-/* ==========================================
-   Taskbar Polish
-========================================== */
-
-#taskbar{
-
-    box-shadow:
-    0 -8px 30px rgba(0,0,0,.35);
-
-}
-
-#start-button{
-
-    transition:
-    transform .25s ease,
-    background .25s ease;
-
-}
-
-#start-button:hover{
-
-    background:
-    rgba(255,255,255,.18);
-
-    transform:
-    scale(1.08);
-
-}
-
-/* ==========================================
-   PolashOS UI v2
-   Start Menu & System Tray
-========================================== */
-
-#start-menu{
-
-    box-shadow:
-    0 20px 50px rgba(0,0,0,.45);
-
-    animation:
-    startMenuOpen .22s ease;
-
-}
-
-#start-menu li{
-
-    padding:12px 14px;
-
-    border-radius:12px;
-
-    transition:
-    background .2s ease,
-    transform .2s ease;
-
-}
-
-#start-menu li:hover{
-
-    background:
-    rgba(255,255,255,.08);
-
-    transform:
-    translateX(6px);
-
-}
-
-#system-tray span{
-
-    padding:6px 8px;
-
-    border-radius:8px;
-
-    transition:
-    background .2s ease;
-
-}
-
-#system-tray span:hover{
-
-    background:
-    rgba(255,255,255,.08);
-
-}
-
-@keyframes startMenuOpen{
-
-    from{
-
-        opacity:0;
-
-        transform:
-        translateY(20px)
-        scale(.96);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-        translateY(0)
-        scale(1);
-
-    }
-
-}
-
-/* ==========================================
-   PolashOS UI v2
-   Final Polish
-========================================== */
-
-html{
-
-    scroll-behavior:smooth;
-
-}
-
-::selection{
-
-    background:#4f8cff;
-
-    color:#ffffff;
-
-}
-
-/* =========================
-   Custom Scrollbar
-========================= */
-
-::-webkit-scrollbar{
-
-    width:10px;
-
-    height:10px;
-
-}
-
-::-webkit-scrollbar-track{
-
-    background:#0f172a;
-
-}
-
-::-webkit-scrollbar-thumb{
-
-    background:#4f8cff;
-
-    border-radius:999px;
-
-}
-
-::-webkit-scrollbar-thumb:hover{
-
-    background:#2563eb;
-
-}
-
-/* =========================
-   Smooth Fade
-========================= */
-
-.fade-in{
-
-    animation:fadeIn .35s ease;
-
-}
-
-@keyframes fadeIn{
-
-    from{
-
-        opacity:0;
-
-    }
-
-    to{
-
-        opacity:1;
-
-    }
-
-}
-
-/* =========================
-   Utility
-========================================== */
-
-.hidden{
-
-    display:none !important;
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
 
 }
 
@@ -915,23 +727,11 @@ html{
    Taskbar Running Apps
 ========================================== */
 
-#taskbar-apps{
-
-    flex:1;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:10px;
-
-    padding:0 20px;
-
-}
-
 .taskbar-app{
+
+    position:relative;
+
+    overflow:hidden;
 
     min-width:52px;
 
@@ -939,7 +739,7 @@ html{
 
     padding:0 16px;
 
-    border:none;
+    border:1px solid transparent;
 
     border-radius:14px;
 
@@ -957,15 +757,15 @@ html{
 
     font-size:13px;
 
-    font-weight:500;
+    font-weight:600;
+
+    white-space:nowrap;
 
     backdrop-filter:blur(18px);
 
-    transition:
-    .25s ease;
+    transition:.25s ease;
 
-    box-shadow:
-    0 0 0 rgba(79,140,255,0);
+    box-shadow:0 0 0 rgba(79,140,255,0);
 
 }
 
@@ -973,36 +773,9 @@ html{
 
     background:rgba(255,255,255,.15);
 
+    border-color:rgba(79,140,255,.35);
+
     transform:translateY(-2px);
-
-}
-
-.taskbar-app.active{
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #3b82f6,
-    #2563eb);
-
-    box-shadow:
-
-    0 0 20px
-
-    rgba(59,130,246,.45);
-
-}
-
-/* ==========================================
-   Taskbar Animations & Effects
-========================================== */
-
-.taskbar-app{
-
-    position:relative;
-
-    overflow:hidden;
 
 }
 
@@ -1044,26 +817,13 @@ html{
 
 .taskbar-app.active{
 
+    background:#4f8cff;
+
+    color:#fff;
+
     border:1px solid rgba(96,165,250,.45);
 
-}
-
-#start-button{
-
-    transition:
-        transform .25s ease,
-        background .25s ease,
-        box-shadow .25s ease;
-
-}
-
-#start-button:hover{
-
-    background:rgba(255,255,255,.18);
-
-    box-shadow:0 0 20px rgba(79,140,255,.35);
-
-    transform:scale(1.08);
+    box-shadow:0 0 15px rgba(79,140,255,.45);
 
 }
 
@@ -1081,106 +841,11 @@ html{
 
 }
 
-/* ==========================================
-   Taskbar Premium Glass UI
-========================================== */
-
-#taskbar{
-
-    background:
-        rgba(12,18,35,.55);
-
-    backdrop-filter:
-        blur(24px);
-
-    -webkit-backdrop-filter:
-        blur(24px);
-
-    border-top:
-        1px solid rgba(255,255,255,.12);
-
-    box-shadow:
-        0 -8px 30px rgba(0,0,0,.25);
-
-}
-
-#taskbar::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:0;
-
-    width:100%;
-
-    height:1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(79,140,255,.5),
-            transparent
-        );
-
-}
-
-#taskbar-apps{
-
-    gap:12px;
-
-}
-
-.taskbar-app{
-
-    white-space:nowrap;
-
-    font-weight:600;
-
-    border:1px solid transparent;
-
-}
-
-.taskbar-app:hover{
-
-    border-color:
-        rgba(79,140,255,.35);
-
-}
-
-#system-tray{
-
-    padding:6px 12px;
-
-    border-radius:14px;
-
-    background:
-        rgba(255,255,255,.05);
-
-}
-
 #clock{
 
     font-weight:600;
 
     letter-spacing:.5px;
-
-}
-
-/* ==========================================
-   Active Taskbar Button
-========================================== */
-
-.taskbar-app.active{
-
-    background:#4f8cff;
-
-    color:#fff;
-
-    box-shadow:0 0 15px rgba(79,140,255,.45);
 
 }
 
@@ -1287,5 +952,144 @@ html{
 
     background:#475569;
 
+}
+
+/* ==========================================
+   Polaris Browser Downloads Panel
+========================================== */
+
+.downloads-panel{
+
+    position:absolute;
+
+    top:92px;
+
+    right:16px;
+
+    width:320px;
+
+    max-height:420px;
+
+    overflow-y:auto;
+
+    background:rgba(15,23,42,.95);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:16px;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:0 20px 50px rgba(0,0,0,.45);
+
+    z-index:20;
+
+}
+
+.downloads-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 16px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.downloads-list{
+
+    padding:12px;
+
+}
+
+.downloads-empty{
+
+    color:#9ca3af;
+
+    text-align:center;
+
+    padding:30px 10px;
+
+}
+
+.download-item{
+
+    padding:10px 12px;
+
+    margin-bottom:10px;
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,.05);
+
+}
+
+#clear-downloads{
+
+    padding:6px 12px;
+
+    font-size:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#ef4444;
+
+    color:#fff;
+
+    cursor:pointer;
+
+}
+
+#clear-downloads:hover{
+
+    background:#dc2626;
+
+}
+
+/* =========================
+   Custom Scrollbar
+========================= */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#0f172a;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#4f8cff;
+
+    border-radius:999px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#2563eb;
+
+}
+
+/* =========================
+   Utility
+========================================== */
+
+.hidden{
+
+    display:none !important;
+
     }
-        
