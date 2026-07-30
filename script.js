@@ -1,5 +1,5 @@
 /* ==========================================
-   PolashOS Core Script v3
+   PolashOS Core Script v3 & Polaris Browser v7.3 (Final Full Code)
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ==========================
-       Clock
+       Clock (Optimized to 1 Minute)
     ========================== */
 
     const clock = document.getElementById("clock");
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateClock();
 
-    setInterval(updateClock, 1000);
+    setInterval(updateClock, 60000);
 
     /* ==========================
        Start Menu
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ==========================
-       Desktop Icons
+       Desktop Icons (Cross-Platform: Touch/Click)
     ========================== */
 
     const appMapping = {
@@ -147,13 +147,18 @@ document.addEventListener("DOMContentLoaded", () => {
         controlIcon: "control-window"
     };
 
+    const openEvent =
+        ('ontouchstart' in window || navigator.maxTouchPoints > 0)
+            ? "click"
+            : "dblclick";
+
     Object.entries(appMapping).forEach(([elementId, windowId]) => {
 
         const icon = document.getElementById(elementId);
 
         if (!icon) return;
 
-        icon.addEventListener("click", (e) => {
+        icon.addEventListener(openEvent, (e) => {
 
             e.stopPropagation();
 
@@ -184,238 +189,233 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-});
+    /* ==========================================
+       Polaris Browser Navigation Engine v7.3
+    ========================================== */
 
-/* ==========================================
-   Polaris Browser Engine v1
-========================================== */
+    const browserFrame = document.getElementById("browser-frame");
+    const addressBar = document.getElementById("browser-address");
 
-const browserFrame = document.getElementById("browser-frame");
-const browserAddress = document.getElementById("browser-address");
+    const browserBack = document.getElementById("browser-back");
+    const browserForward = document.getElementById("browser-forward");
+    const browserRefresh = document.getElementById("browser-refresh");
+    const browserHome = document.getElementById("browser-home");
 
-const browserBack = document.getElementById("browser-back");
-const browserForward = document.getElementById("browser-forward");
-const browserRefresh = document.getElementById("browser-refresh");
-const browserHome = document.getElementById("browser-home");
+    // History Engine (Future History Panel will use browserHistory)
+    let browserHistory = JSON.parse(localStorage.getItem("polaris-history")) || [];
 
-function openAddress(value){
+    function saveHistory(url) {
+        if (!url || url === "about:blank") return;
 
-    if(!value) return;
+        browserHistory.unshift(url);
+        browserHistory = [...new Set(browserHistory)];
 
-    value = value.trim();
-
-    if(
-        value.startsWith("http://") ||
-        value.startsWith("https://")
-    ){
-
-        browserFrame.src = value;
-
-    }else if(value.includes(".")){
-
-        browserFrame.src = "https://" + value;
-
-    }else{
-
-        browserFrame.src =
-        "https://www.google.com/search?q=" +
-        encodeURIComponent(value);
-
+        localStorage.setItem(
+            "polaris-history",
+            JSON.stringify(browserHistory)
+        );
     }
 
-}
+    const navigateBrowser = window.navigateBrowser = function(input) {
+        let url = input.trim();
 
-if(browserAddress){
+        if (!url) return;
 
-    browserAddress.addEventListener("keydown",(e)=>{
-
-        if(e.key==="Enter"){
-
-            openAddress(browserAddress.value);
-
+        if (
+            url.includes(".") &&
+            !url.startsWith("http://") &&
+            !url.startsWith("https://")
+        ) {
+            url = "https://" + url;
         }
 
-    });
+        if (
+            !url.startsWith("http://") &&
+            !url.startsWith("https://")
+        ) {
+            url = "https://www.google.com/search?q=" + encodeURIComponent(input);
+        }
 
-}
+        if (browserFrame) browserFrame.src = url;
+        if (addressBar) addressBar.value = url;
 
-if(browserHome){
-
-    browserHome.onclick=()=>{
-
-        browserFrame.src="about:blank";
-
-        browserAddress.value="";
-
+        saveHistory(url);
     };
 
-}
+    /* Press Enter */
+    if (addressBar) {
+        addressBar.addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+                window.navigateBrowser(addressBar.value);
+            }
+        });
+    }
 
-if(browserRefresh){
+    /* Home Button */
+    if (browserHome) {
+        browserHome.onclick = () => {
+            if (browserFrame) browserFrame.src = "https://www.google.com";
+            if (addressBar) addressBar.value = "https://www.google.com";
+        };
+    }
 
-    browserRefresh.onclick=()=>{
+    /* Refresh Button */
+    if (browserRefresh && browserFrame) {
+        browserRefresh.onclick = () => {
+            try {
+                browserFrame.contentWindow.location.reload();
+            } catch(e) {
+                browserFrame.src = browserFrame.src;
+            }
+        };
+    }
 
-        browserFrame.contentWindow.location.reload();
+    /* Back Button */
+    if (browserBack && browserFrame) {
+        browserBack.onclick = () => {
+            try {
+                browserFrame.contentWindow.history.back();
+            } catch(e) {}
+        };
+    }
 
-    };
+    /* Forward Button */
+    if (browserForward && browserFrame) {
+        browserForward.onclick = () => {
+            try {
+                browserFrame.contentWindow.history.forward();
+            } catch(e) {}
+        };
+    }
 
-}
+    /* ==========================================
+       Polaris Browser Tabs v2
+    ========================================== */
 
-if(browserBack){
+    const newTabBtn = document.getElementById("new-tab-btn");
+    const browserTabs = document.querySelector(".browser-tabs");
 
-    browserBack.onclick=()=>{
+    let tabCount = 1;
 
-        browserFrame.contentWindow.history.back();
+    if (newTabBtn && browserTabs) {
+        newTabBtn.addEventListener("click", () => {
+            tabCount++;
 
-    };
+            const tab = document.createElement("div");
+            tab.className = "browser-tab";
+            tab.innerHTML = `🌐 Tab ${tabCount}`;
 
-}
+            browserTabs.insertBefore(tab, newTabBtn);
 
-if(browserForward){
-
-    browserForward.onclick=()=>{
-
-        browserFrame.contentWindow.history.forward();
-
-    };
-
-}
-
-/* ==========================================
-   Polaris Browser Tabs v2
-========================================== */
-
-const newTabBtn = document.getElementById("new-tab-btn");
-const browserTabs = document.querySelector(".browser-tabs");
-
-let tabCount = 1;
-
-if (newTabBtn) {
-
-    newTabBtn.addEventListener("click", () => {
-
-        tabCount++;
-
-        const tab = document.createElement("div");
-
-        tab.className = "browser-tab";
-
-        tab.innerHTML = `🌐 Tab ${tabCount}`;
-
-        browserTabs.insertBefore(tab, newTabBtn);
-
-        document
-            .querySelectorAll(".browser-tab")
-            .forEach(t => t.classList.remove("active"));
-
-        tab.classList.add("active");
-
-        browserFrame.src = "about:blank";
-        browserAddress.value = "";
-
-        tab.addEventListener("click", () => {
-
-            document
-                .querySelectorAll(".browser-tab")
-                .forEach(t => t.classList.remove("active"));
-
+            document.querySelectorAll(".browser-tab").forEach(t => t.classList.remove("active"));
             tab.classList.add("active");
 
+            if (browserFrame) browserFrame.src = "about:blank";
+            if (addressBar) addressBar.value = "";
+
+            tab.addEventListener("click", () => {
+                document.querySelectorAll(".browser-tab").forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+            });
         });
+    }
 
-    });
+    /* ==========================================
+       Polaris Browser Bookmarks Engine v4 (Ready for Custom Notification System)
+    ========================================== */
 
-}
+    const bookmarkBtn = document.getElementById("browser-bookmark");
+    let browserBookmarks = JSON.parse(localStorage.getItem("polaris-bookmarks")) || [];
 
-/* ==========================================
-   Polaris Browser History v3
-========================================== */
+    if (bookmarkBtn && browserFrame) {
+        bookmarkBtn.addEventListener("click", () => {
+            const url = browserFrame.src;
 
-let browserHistory = [];
+            if (!url || url === "about:blank") return;
 
-function saveHistory(url){
+            if (!browserBookmarks.includes(url)) {
+                browserBookmarks.push(url);
+                localStorage.setItem("polaris-bookmarks", JSON.stringify(browserBookmarks));
+                
+                // TODO: Replace with custom OS Notification System in future version
+                console.log("⭐ Bookmark Saved");
+            } else {
+                // TODO: Replace with custom OS Notification System in future version
+                console.log("⭐ Already Bookmarked");
+            }
+        });
+    }
 
-    if(!url) return;
+    /* ==========================================
+       Polaris Browser Real Downloads Manager v7.3
+    ========================================== */
 
-    browserHistory.unshift(url);
+    const downloadsBtn = document.getElementById("browser-downloads");
+    const downloadsPanel = document.getElementById("downloads-panel");
+    const downloadsList = document.getElementById("downloads-list");
+    const clearDownloadsBtn = document.getElementById("clear-downloads");
 
-    browserHistory = [...new Set(browserHistory)];
+    let downloadsData = JSON.parse(localStorage.getItem("polaris-downloads")) || [];
 
-    localStorage.setItem(
-        "polaris-history",
-        JSON.stringify(browserHistory)
-    );
+    function renderDownloads() {
+        if (!downloadsList) return;
 
-}
-
-const oldOpenAddress = openAddress;
-
-openAddress = function(value){
-
-    oldOpenAddress(value);
-
-    saveHistory(browserFrame.src);
-
-};
-/* ==========================================
-   Polaris Browser Bookmarks Engine v4
-========================================== */
-
-const bookmarkBtn = document.getElementById("browser-bookmark");
-
-let browserBookmarks =
-JSON.parse(localStorage.getItem("polaris-bookmarks")) || [];
-
-if(bookmarkBtn){
-
-    bookmarkBtn.addEventListener("click",()=>{
-
-        const url = browserFrame.src;
-
-        if(
-            !url ||
-            url === "about:blank"
-        ) return;
-
-        if(!browserBookmarks.includes(url)){
-
-            browserBookmarks.push(url);
-
-            localStorage.setItem(
-                "polaris-bookmarks",
-                JSON.stringify(browserBookmarks)
-            );
-
-            alert("⭐ Bookmark Saved");
-
-        }else{
-
-            alert("⭐ Already Bookmarked");
-
+        if (downloadsData.length === 0) {
+            downloadsList.innerHTML = `
+                <p class="downloads-empty">
+                    No downloads yet.
+                </p>
+            `;
+            return;
         }
 
-    });
+        downloadsList.innerHTML = "";
+        downloadsData.forEach((item) => {
+            const downloadItem = document.createElement("div");
+            downloadItem.className = "download-item";
+            downloadItem.innerHTML = `
+                <div class="download-info">
+                    <div class="download-name" title="${item.name}">${item.name}</div>
+                    <div class="download-meta">${item.size || "Completed"}</div>
+                </div>
+                <div class="download-actions">
+                    <a href="${item.url}" target="_blank" download class="download-btn">Open</a>
+                </div>
+            `;
+            downloadsList.appendChild(downloadItem);
+        });
+    }
 
-}
-/* ==========================================
-   Polaris Browser Downloads Engine v5
-========================================== */
+    window.addDownload = function(name, url, size = "2.4 MB") {
+        downloadsData.unshift({ name, url, size });
+        localStorage.setItem("polaris-downloads", JSON.stringify(downloadsData));
+        renderDownloads();
+    };
 
-const downloadsBtn =
-document.getElementById("browser-downloads");
+    if (downloadsBtn && downloadsPanel) {
+        downloadsBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            downloadsPanel.hidden = !downloadsPanel.hidden;
+            renderDownloads();
+        });
 
-if(downloadsBtn){
+        document.addEventListener("click", (e) => {
+            if (!downloadsPanel.contains(e.target) && !downloadsBtn.contains(e.target)) {
+                downloadsPanel.hidden = true;
+            }
+        });
+    }
 
-    downloadsBtn.addEventListener("click",()=>{
+    if (clearDownloadsBtn) {
+        clearDownloadsBtn.addEventListener("click", () => {
+            downloadsData = [];
+            localStorage.removeItem("polaris-downloads");
+            renderDownloads();
+        });
+    }
 
-        alert(
-`📥 Downloads
+    // Initial render call
+    renderDownloads();
 
-No downloads yet.
-
-(Download Manager will be added in v6)`
-        );
-
-    });
-
-}
+});
+   
