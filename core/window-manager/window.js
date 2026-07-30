@@ -1,5 +1,5 @@
 /* ==========================================
-   PolashOS Window Manager v6 - Professional Final (v1.0)
+   PolashOS Window Manager v6.5 - Professional Final
 ========================================== */
 
 class WindowManager {
@@ -9,6 +9,8 @@ class WindowManager {
         this.activeWindow = null;
         this.zIndex = 100;
         this.taskbarApps = document.getElementById("taskbar-apps");
+        this.cascadeOffset = 0;
+        this.isInitialized = false;
     }
 
     /* ==========================
@@ -24,13 +26,18 @@ class WindowManager {
         this.windows[id] = {
             element,
             minimized: false,
-            maximized: false
+            maximized: false,
+            savedRect: null
         };
+
+        const startX = 120 + (this.cascadeOffset * 30);
+        const startY = 80 + (this.cascadeOffset * 30);
+        this.cascadeOffset = (this.cascadeOffset + 1) % 5;
 
         element.style.position = "absolute";
         element.style.zIndex = ++this.zIndex;
-        element.style.left = "120px";
-        element.style.top = "80px";
+        element.style.left = startX + "px";
+        element.style.top = startY + "px";
     }
 
     /* ==========================
@@ -66,7 +73,12 @@ class WindowManager {
         if (!windowData) return;
 
         this.animateClose(id);
-        this.removeTaskbarButton(id);
+        windowData.maximized = false;
+
+        setTimeout(() => {
+            windowData.minimized = false;
+            this.removeTaskbarButton(id);
+        }, 200);
         
         if (this.activeWindow === id) {
             this.activeWindow = null;
@@ -126,6 +138,7 @@ class WindowManager {
         const windowData = this.get(id);
         if (!windowData) return;
 
+        windowData.element.hidden = true;
         windowData.element.style.display = "none";
         windowData.minimized = true;
 
@@ -142,9 +155,56 @@ class WindowManager {
         const windowData = this.get(id);
         if (!windowData) return;
 
+        windowData.element.hidden = false;
         windowData.element.style.display = "block";
         windowData.minimized = false;
         this.focus(id);
+    }
+
+    /* ==========================
+       Maximize / Unmaximize Window (Safeguarded)
+    ========================== */
+    toggleMaximize(id) {
+        const windowData = this.get(id);
+        if (!windowData) return;
+
+        const win = windowData.element;
+
+        if (!windowData.maximized) {
+            const rect = win.getBoundingClientRect();
+
+            windowData.savedRect = {
+                top: win.style.top || rect.top + "px",
+                left: win.style.left || rect.left + "px",
+                width: rect.width + "px",
+                height: rect.height + "px"
+            };
+
+            const taskbar = document.getElementById("taskbar");
+            const taskbarHeight = taskbar ? taskbar.offsetHeight : 64;
+
+            win.style.top = "0px";
+            win.style.left = "0px";
+            win.style.width = "100%";
+            win.style.height = `calc(100% - ${taskbarHeight}px)`;
+            win.classList.add("maximized");
+            windowData.maximized = true;
+        } else {
+            // Guard clause to safely restore position & size
+            if (windowData.savedRect) {
+                win.style.top = windowData.savedRect.top;
+                win.style.left = windowData.savedRect.left;
+                win.style.width = windowData.savedRect.width;
+                win.style.height = windowData.savedRect.height;
+            } else {
+                win.style.top = "80px";
+                win.style.left = "120px";
+                win.style.width = "600px";
+                win.style.height = "400px";
+            }
+            win.classList.remove("maximized");
+            windowData.maximized = false;
+        }
     }
 
     /* ==========================
@@ -228,7 +288,7 @@ class WindowManager {
     }
 
     /* ==========================
-       Drag System (Professional Final v1.0)
+       Drag System (Professional)
     ========================== */
     makeDraggable(id) {
         const windowData = this.get(id);
@@ -246,21 +306,17 @@ class WindowManager {
         let rafId = null;
 
         titlebar.addEventListener("mousedown", (e) => {
-
-            // শুধুমাত্র লেফট ক্লিক (0) চেক করা
             if (e.button !== 0) return;
-
             if (e.target.closest("button")) return;
+            if (windowData.maximized) return;
 
             this.focus(id);
 
             isDragging = true;
-
             startX = e.clientX;
             startY = e.clientY;
 
             const rect = win.getBoundingClientRect();
-
             initialX = rect.left;
             initialY = rect.top;
 
@@ -271,7 +327,6 @@ class WindowManager {
             document.body.style.cursor = "grabbing";
 
             const onMouseMove = (e) => {
-
                 if (!isDragging) return;
 
                 const dx = e.clientX - startX;
@@ -280,9 +335,8 @@ class WindowManager {
                 if (rafId) cancelAnimationFrame(rafId);
 
                 rafId = requestAnimationFrame(() => {
-
                     const taskbar = document.getElementById("taskbar");
-                    const taskbarHeight = taskbar ? taskbar.offsetHeight : 48;
+                    const taskbarHeight = taskbar ? taskbar.offsetHeight : 64;
 
                     const newLeft = Math.max(
                         0,
@@ -300,15 +354,11 @@ class WindowManager {
                     win.style.left = newLeft + "px";
                     win.style.top = newTop + "px";
                     win.style.transform = "none";
-
                 });
-
             };
 
             const onMouseUp = () => {
-
                 isDragging = false;
-
                 document.body.style.userSelect = "";
                 document.body.style.cursor = "";
 
@@ -321,16 +371,78 @@ class WindowManager {
                 }
 
                 win.style.willChange = "";
-
                 requestAnimationFrame(() => {
                     win.style.transition = "";
                 });
-
             };
 
             document.addEventListener("mousemove", onMouseMove);
             document.addEventListener("mouseup", onMouseUp);
+        });
+    }
 
+    /* ==========================
+       Resize System (Professional)
+    ========================== */
+    makeResizable(id) {
+        const windowData = this.get(id);
+        if (!windowData) return;
+
+        const win = windowData.element;
+        const handle = win.querySelector(".resize-handle");
+        if (!handle) return;
+
+        let isResizing = false;
+        let startX = 0;
+        let startY0 = 0;
+        let startWidth = 0;
+        let startHeight = 0;
+
+        handle.addEventListener("mousedown", (e) => {
+            if (e.button !== 0) return;
+            if (windowData.maximized) return;
+
+            e.preventDefault();
+            this.focus(id);
+
+            isResizing = true;
+            startX = e.clientX;
+            startY0 = e.clientY;
+
+            const rect = win.getBoundingClientRect();
+            startWidth = rect.width;
+            startHeight = rect.height;
+
+            win.style.transition = "none";
+            document.body.style.userSelect = "none";
+
+            const onMouseMove = (e) => {
+                if (!isResizing) return;
+
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY0;
+
+                const newWidth = Math.max(350, startWidth + dx);
+                const newHeight = Math.max(220, startHeight + dy);
+
+                win.style.width = newWidth + "px";
+                win.style.height = newHeight + "px";
+            };
+
+            const onMouseUp = () => {
+                isResizing = false;
+                document.body.style.userSelect = "";
+
+                document.removeEventListener("mousemove", onMouseMove);
+                document.removeEventListener("mouseup", onMouseUp);
+
+                requestAnimationFrame(() => {
+                    win.style.transition = "";
+                });
+            };
+
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
         });
     }
 
@@ -347,13 +459,18 @@ class WindowManager {
        Initialize
     ========================== */
     initialize() {
+        if (this.isInitialized) return;
+        this.isInitialized = true;
+
         Object.keys(this.windows).forEach(id => {
             this.makeDraggable(id);
+            this.makeResizable(id);
             this.attachFocus(id);
 
             const win = this.windows[id].element;
             const closeBtn = win.querySelector(".window-close");
             const minimizeBtn = win.querySelector(".window-minimize");
+            const maximizeBtn = win.querySelector(".window-maximize");
 
             if (closeBtn) {
                 closeBtn.addEventListener("click", () => {
@@ -366,6 +483,12 @@ class WindowManager {
                     this.minimize(id);
                 });
             }
+
+            if (maximizeBtn) {
+                maximizeBtn.addEventListener("click", () => {
+                    this.toggleMaximize(id);
+                });
+            }
         });
     }
 }
@@ -374,8 +497,8 @@ class WindowManager {
    Global Window Manager Initialization
 ========================================== */
 
-const windowManager = new WindowManager();
-window.windowManager = windowManager;
+window.windowManager = window.windowManager || new WindowManager();
+const windowManager = window.windowManager;
 
 document.addEventListener("DOMContentLoaded", () => {
     [
@@ -391,13 +514,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ==========================================
-   PolashOS Smart Click / Touch Event Handler
+   PolashOS Config & Smart Event Handler
 ========================================== */
+
+const PolashConfig = {
+    openMode: "auto"
+};
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    const eventType = isTouchDevice ? "click" : "dblclick";
+    
+    let eventType = "dblclick";
+    if (PolashConfig.openMode === "single" || (PolashConfig.openMode === "auto" && isTouchDevice)) {
+        eventType = "click";
+    }
 
     [
         "browserIcon",
@@ -407,11 +538,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ].forEach(iconId => {
 
         const icon = document.getElementById(iconId);
-
         if (!icon) return;
 
         icon.addEventListener(eventType, () => {
-
             const map = {
                 browserIcon: "browser-window",
                 filesIcon: "files-window",
@@ -422,10 +551,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (window.windowManager) {
                 window.windowManager.toggle(map[iconId]);
             }
-
         });
 
     });
 
 });
-               
+                   
