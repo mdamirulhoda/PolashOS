@@ -1,5 +1,5 @@
 /* ==========================================
-   Atlas Files Engine v3.2 (Final Full Code with Safety Check)
+   Atlas Files Engine v4.5 (Final Full Code with Confirmation Stubs)
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -135,19 +135,53 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ==========================
-       Rename Folder / File
+       Context Menu Setup
     ========================== */
+
+    const contextMenu = document.getElementById("files-context-menu");
+    const renameItem = document.getElementById("rename-item");
+    const deleteItem = document.getElementById("delete-item");
+
+    let selectedItem = null;
 
     filesGrid.addEventListener("contextmenu", (e) => {
         e.preventDefault();
 
-        const item = e.target.closest(".file-item");
-        if (!item) return;
+        const target = e.target.closest(".file-item");
+        if (!target || !contextMenu) return;
 
-        const oldName = item.querySelector("span:last-child").textContent;
+        selectedItem = target;
+
+        contextMenu.hidden = false;
+        contextMenu.style.left = `${e.clientX}px`;
+        contextMenu.style.top = `${e.clientY}px`;
+    });
+
+    document.addEventListener("click", () => {
+        if (contextMenu) {
+            contextMenu.hidden = true;
+            selectedItem = null;
+        }
+    });
+
+    /* ==========================
+       Rename Action
+    ========================== */
+
+    renameItem?.addEventListener("click", () => {
+        if (!selectedItem) return;
+
+        const oldName = selectedItem.querySelector("span:last-child").textContent;
         const newName = prompt("Rename", oldName);
 
         if (!newName || newName === oldName) return;
+
+        // Duplicate Name Check
+        if (fileSystem[currentFolder].some(f => f.name === newName)) {
+            // TODO: Replace with PolashOS Notification System -> showNotification("Name already exists.");
+            alert("Name already exists.");
+            return;
+        }
 
         const target = fileSystem[currentFolder].find(
             f => f.name === oldName
@@ -164,7 +198,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         saveFileSystem();
         renderFolder();
+
+        selectedItem = null;
+        if (contextMenu) contextMenu.hidden = true;
+    });
+
+    /* ==========================
+       Delete Action
+    ========================== */
+
+    deleteItem?.addEventListener("click", () => {
+        if (!selectedItem) return;
+
+        const itemName = selectedItem.querySelector("span:last-child").textContent;
+
+        /* 
+           TODO: Replace with PolashOS Custom Confirmation Dialog in future:
+           Delete "itemName" ?
+           [Delete] [Cancel]
+        */
+
+        fileSystem[currentFolder] = fileSystem[currentFolder].filter(
+            item => item.name !== itemName
+        );
+
+        if (fileSystem[itemName]) {
+            delete fileSystem[itemName];
+        }
+
+        saveFileSystem();
+        renderFolder();
+
+        selectedItem = null;
+        if (contextMenu) contextMenu.hidden = true;
     });
 
 });
-                             
+       
