@@ -113,3 +113,32 @@ document.querySelectorAll(".sidebar-menu li").forEach(item => {
     });
 
 });
+/* ==========================
+   Back Navigation
+========================== */
+
+const filesBack = document.getElementById("files-back");
+
+if (filesBack) {
+
+    filesBack.addEventListener("click", () => {
+
+        if (currentFolder !== "Home") {
+
+            currentFolder = "Home";
+
+            document
+                .querySelectorAll(".sidebar-menu li")
+                .forEach(i => i.classList.remove("active"));
+
+            const homeItem = document.querySelector(".sidebar-menu li");
+
+            if (homeItem) homeItem.classList.add("active");
+
+            renderFolder();
+
+        }
+
+    });
+
+}
