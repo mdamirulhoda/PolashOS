@@ -86,3 +86,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+/* ==========================
+   Sidebar Navigation
+========================== */
+
+document.querySelectorAll(".sidebar-menu li").forEach(item => {
+
+    item.addEventListener("click", () => {
+
+        const folder = item.textContent.replace(/^[^\w]+/, "").trim();
+
+        if (fileSystem[folder]) {
+
+            currentFolder = folder;
+
+            document
+                .querySelectorAll(".sidebar-menu li")
+                .forEach(i => i.classList.remove("active"));
+
+            item.classList.add("active");
+
+            renderFolder();
+
+        }
+
+    });
+
+});
