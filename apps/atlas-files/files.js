@@ -1,5 +1,5 @@
 /* ==========================================
-   Atlas Files Engine v4.5 (Final Full Code with Confirmation Stubs)
+   Atlas Files Engine v4.10 (Full Code with Safe Cloning & State Cleanup)
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,6 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     let currentFolder = "Home";
+
+    /* ==========================
+       Clipboard Engine
+    ========================== */
+
+    let clipboard = null;
+    let clipboardMode = null; // "copy" | "cut"
 
     function saveFileSystem() {
         localStorage.setItem("atlas-filesystem", JSON.stringify(fileSystem));
@@ -140,6 +147,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const contextMenu = document.getElementById("files-context-menu");
     const renameItem = document.getElementById("rename-item");
+    const copyItem = document.getElementById("copy-item");
+    const cutItem = document.getElementById("cut-item");
+    const pasteItem = document.getElementById("paste-item");
     const deleteItem = document.getElementById("delete-item");
 
     let selectedItem = null;
@@ -233,5 +243,96 @@ document.addEventListener("DOMContentLoaded", () => {
         if (contextMenu) contextMenu.hidden = true;
     });
 
+    /* ==========================
+       Copy Action
+    ========================== */
+
+    copyItem?.addEventListener("click", () => {
+
+        if (!selectedItem) return;
+
+        const itemName = selectedItem.querySelector("span:last-child").textContent;
+
+        const target = fileSystem[currentFolder].find(
+            item => item.name === itemName
+        );
+
+        if (!target) return;
+
+        clipboard = JSON.parse(JSON.stringify(target));
+        clipboardMode = "copy";
+
+        selectedItem = null;
+        if (contextMenu) contextMenu.hidden = true;
+
+    });
+
+    /* ==========================
+       Cut Action
+    ========================== */
+
+    cutItem?.addEventListener("click", () => {
+
+        if (!selectedItem) return;
+
+        const itemName = selectedItem.querySelector("span:last-child").textContent;
+
+        const target = fileSystem[currentFolder].find(
+            item => item.name === itemName
+        );
+
+        if (!target) return;
+
+        clipboard = JSON.parse(JSON.stringify(target));
+        clipboardMode = "cut";
+
+        selectedItem = null;
+        if (contextMenu) contextMenu.hidden = true;
+
+    });
+
+    /* ==========================
+       Paste Action
+    ========================== */
+
+    pasteItem?.addEventListener("click", () => {
+
+        if (!clipboard) return;
+
+        if (!fileSystem[currentFolder]) {
+            fileSystem[currentFolder] = [];
+        }
+
+        if (fileSystem[currentFolder].some(item => item.name === clipboard.name)) {
+            alert("Item already exists.");
+            return;
+        }
+
+        if (clipboardMode === "cut") {
+
+            Object.keys(fileSystem).forEach(folder => {
+                fileSystem[folder] = fileSystem[folder].filter(
+                    item => item.name !== clipboard.name
+                );
+            });
+
+        }
+
+        fileSystem[currentFolder].push(
+            JSON.parse(JSON.stringify(clipboard))
+        );
+
+        if (clipboardMode === "cut") {
+            clipboard = null;
+            clipboardMode = null;
+        }
+
+        saveFileSystem();
+        renderFolder();
+
+        if (contextMenu) contextMenu.hidden = true;
+        selectedItem = null;
+
+    });
+
 });
-       
