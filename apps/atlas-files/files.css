@@ -171,3 +171,48 @@
 .file-item:active {
     transform: scale(.97);
        }
+/* ==========================================
+   Atlas Files Context Menu
+========================================== */
+
+.files-context-menu {
+
+    position: fixed;
+
+    min-width: 180px;
+
+    background: rgba(32, 32, 32, .95);
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    z-index: 9999;
+
+    box-shadow: 0 12px 30px rgba(0,0,0,.35);
+
+}
+
+.context-item {
+
+    padding: 12px 16px;
+
+    cursor: pointer;
+
+    color: #fff;
+
+    transition: background .18s ease;
+
+    user-select: none;
+
+}
+
+.context-item:hover {
+
+    background: rgba(255,255,255,.08);
+
+   }
