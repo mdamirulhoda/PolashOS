@@ -1,81 +1,88 @@
 /* ==========================================
-   Atlas Files Engine v1
+   Atlas Files Engine v2
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const filesGrid = document.getElementById("files-grid");
-    const newFolderBtn = document.getElementById("new-folder-btn");
+    const filesPath = document.querySelector(".files-path");
     const refreshBtn = document.getElementById("refresh-folder-btn");
+    const newFolderBtn = document.getElementById("new-folder-btn");
 
     if (!filesGrid) return;
 
-    let files = [
-        { icon: "📂", name: "Documents" },
-        { icon: "🖼", name: "Pictures" },
-        { icon: "🎵", name: "Music" },
-        { icon: "🎬", name: "Videos" },
-        { icon: "⬇", name: "Downloads" },
-        { icon: "📄", name: "README.txt" }
-    ];
+    const fileSystem = {
+        Home: [
+            { type: "folder", name: "Desktop" },
+            { type: "folder", name: "Documents" },
+            { type: "folder", name: "Pictures" },
+            { type: "folder", name: "Music" },
+            { type: "folder", name: "Videos" },
+            { type: "folder", name: "Downloads" },
+            { type: "file", name: "README.txt" }
+        ],
 
-    function renderFiles() {
+        Desktop: [],
+        Documents: [],
+        Pictures: [],
+        Music: [],
+        Videos: [],
+        Downloads: []
+    };
+
+    let currentFolder = "Home";
+
+    function renderFolder() {
 
         filesGrid.innerHTML = "";
 
-        files.forEach(file => {
+        filesPath.textContent = currentFolder;
 
-            const item = document.createElement("div");
+        fileSystem[currentFolder].forEach(item => {
 
-            item.className = "file-item";
+            const div = document.createElement("div");
 
-            item.innerHTML = `
-                <span>${file.icon}</span>
-                <span>${file.name}</span>
+            div.className = "file-item";
+
+            div.innerHTML = `
+                <span>${item.type === "folder" ? "📁" : "📄"}</span>
+                <span>${item.name}</span>
             `;
 
-            filesGrid.appendChild(item);
+            if (item.type === "folder") {
+
+                div.addEventListener("dblclick", () => {
+
+                    currentFolder = item.name;
+                    renderFolder();
+
+                });
+
+            }
+
+            filesGrid.appendChild(div);
 
         });
 
     }
 
-    renderFiles();
+    renderFolder();
 
-    /* ==========================
-       New Folder
-    ========================== */
+    refreshBtn?.addEventListener("click", renderFolder);
 
-    if (newFolderBtn) {
+    newFolderBtn?.addEventListener("click", () => {
 
-        newFolderBtn.addEventListener("click", () => {
+        const name = `New Folder ${Date.now()}`;
 
-            const folderName =
-                `New Folder ${files.length}`;
-
-            files.unshift({
-                icon: "📁",
-                name: folderName
-            });
-
-            renderFiles();
-
+        fileSystem[currentFolder].push({
+            type: "folder",
+            name
         });
 
-    }
+        fileSystem[name] = [];
 
-    /* ==========================
-       Refresh
-    ========================== */
+        renderFolder();
 
-    if (refreshBtn) {
-
-        refreshBtn.addEventListener("click", () => {
-
-            renderFiles();
-
-        });
-
-    }
+    });
 
 });
