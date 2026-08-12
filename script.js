@@ -3188,4 +3188,92 @@ function escapeHTML(value) {
 
 /* Global access */
 window.ViewerModule = ViewerModule;
+    /* ==========================================================
+       FILE SELECTION & NAVIGATION
+       ========================================================== */
+
+    filesGrid?.addEventListener("click", async e => {
+
+        const itemEl = e.target.closest(".file-item");
+
+        if (!itemEl) {
+            selectedItemIds.clear();
+            await renderFolder();
+            return;
+        }
+
+        const id = itemEl.dataset.id;
+
+        if (e.ctrlKey || e.metaKey) {
+
+            if (selectedItemIds.has(id)) {
+                selectedItemIds.delete(id);
+            } else {
+                selectedItemIds.add(id);
+            }
+
+        } else {
+
+            selectedItemIds.clear();
+            selectedItemIds.add(id);
+
+        }
+
+        await renderFolder();
+    });
+
+    filesGrid?.addEventListener("dblclick", async e => {
+
+        const itemEl = e.target.closest(".file-item");
+
+        if (!itemEl) return;
+
+        const id = itemEl.dataset.id;
+        const item = await StorageModule.getNode(id);
+
+        if (!item) return;
+
+        if (item.type === "folder") {
+
+            currentFolderId = item.id;
+            selectedItemIds.clear();
+
+            await renderFolder();
+
+        } else {
+
+            ViewerModule.openFile(item, renderFolder);
+
+        }
+
+    });
+
+    /* ==========================================================
+       GO TO PARENT FOLDER
+       ========================================================== */
+
+    window.atlasGoBack = async function () {
+
+        const current = await StorageModule.getNode(currentFolderId);
+
+        if (!current || !current.parentId) return;
+
+        currentFolderId = current.parentId;
+        selectedItemIds.clear();
+
+        await renderFolder();
+
+    };
+
+    /* ==========================================================
+       REFRESH FILES
+       ========================================================== */
+
+    window.atlasRefreshFiles = async function () {
+
+        selectedItemIds.clear();
+
+        await renderFolder();
+
+    };
                                 
