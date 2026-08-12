@@ -3276,4 +3276,96 @@ window.ViewerModule = ViewerModule;
         await renderFolder();
 
     };
+        /* ==========================================================
+       ATLAS FILES SEARCH ENGINE
+       ========================================================== */
+
+    const searchInput = document.getElementById("files-search-input");
+
+    window.atlasSearchFiles = async function (query) {
+
+        if (!filesGrid) return;
+
+        query = String(query || "").trim().toLowerCase();
+
+        if (!query) {
+            await renderFolder();
+            return;
+        }
+
+        const allNodes = await StorageModule.getAllNodes();
+
+        const results = allNodes.filter(node =>
+            !node.system &&
+            node.name &&
+            node.name.toLowerCase().includes(query)
+        );
+
+        filesGrid.innerHTML = "";
+
+        if (results.length === 0) {
+
+            filesGrid.innerHTML = `
+                <div class="files-empty-state">
+                    🔍 No files or folders found
+                </div>
+            `;
+
+            return;
+        }
+
+        const frag = document.createDocumentFragment();
+
+        results.forEach(item => {
+
+            const div = document.createElement("div");
+
+            div.className =
+                "file-item" +
+                (selectedItemIds.has(item.id) ? " selected" : "");
+
+            div.dataset.id = item.id;
+            div.draggable = true;
+
+            div.innerHTML = `
+                <span>
+                    ${item.type === "folder" ? "📁" : "📄"}
+                </span>
+
+                <span class="file-name-label">
+                    ${item.name}
+                </span>
+            `;
+
+            frag.appendChild(div);
+
+        });
+
+        filesGrid.appendChild(frag);
+
+    };
+
+    if (searchInput) {
+
+        searchInput.addEventListener("input", e => {
+
+            atlasSearchFiles(e.target.value);
+
+        });
+
+        searchInput.addEventListener("keydown", e => {
+
+            if (e.key === "Escape") {
+
+                searchInput.value = "";
+
+                atlasSearchFiles("");
+
+                searchInput.blur();
+
+            }
+
+        });
+
+            }
                                 
