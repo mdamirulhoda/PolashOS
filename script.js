@@ -3368,4 +3368,83 @@ window.ViewerModule = ViewerModule;
         });
 
             }
+                /* ==========================================================
+       CREATE NEW FOLDER / FILE
+       ========================================================== */
+
+    window.atlasCreateFolder = async function (name = "New Folder") {
+
+        name = String(name).trim();
+
+        if (!name) return;
+
+        const id =
+            `folder_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
+        await StorageModule.saveNode({
+            id,
+            name,
+            parentId: currentFolderId,
+            type: "folder",
+            created: Date.now(),
+            modified: Date.now()
+        });
+
+        selectedItemIds.clear();
+
+        await renderFolder();
+    };
+
+
+    window.atlasCreateFile = async function (
+        name = "New File.txt",
+        content = ""
+    ) {
+
+        name = String(name).trim();
+
+        if (!name) return;
+
+        const id =
+            `file_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
+        await StorageModule.saveNode({
+            id,
+            name,
+            parentId: currentFolderId,
+            type: "file",
+            size: new Blob([content]).size,
+            content,
+            created: Date.now(),
+            modified: Date.now()
+        });
+
+        selectedItemIds.clear();
+
+        await renderFolder();
+    };
+
+
+    /* ==========================================================
+       QUICK CREATE DIALOG
+       ========================================================== */
+
+    window.atlasNewFolder = async function () {
+
+        const name = prompt("Folder name:");
+
+        if (!name) return;
+
+        await atlasCreateFolder(name);
+    };
+
+
+    window.atlasNewFile = async function () {
+
+        const name = prompt("File name:", "New File.txt");
+
+        if (!name) return;
+
+        await atlasCreateFile(name, "");
+    };
                                 
