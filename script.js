@@ -2082,4 +2082,821 @@ filesGrid?.addEventListener(
 
         const itemElement =
             event.target.
+            /* ==========================================================
+   ATLAS FILES ENGINE v18
+   PART 3 — REAL FILE VIEWER
+   TXT / MD / JSON / JS / HTML / CSS
+   IMAGE / VIDEO / AUDIO
+========================================================== */
+
+
+/* ==========================================================
+   43. VIEWER MODULE
+========================================================== */
+
+const ViewerModule = {
+
+    openFile(item, renderCallback) {
+
+        if (!item || !item.name) {
+            return;
+        }
+
+        const extension =
+            item.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+
+        /* ==================================================
+           TEXT / CODE FILES
+        ================================================== */
+
+        if (
+            [
+                "txt",
+                "md",
+                "json",
+                "js",
+                "css",
+                "html",
+                "htm",
+                "xml",
+                "csv"
+            ].includes(extension)
+        ) {
+
+            this.openTextEditor(
+                item,
+                renderCallback
+            );
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           IMAGE FILES
+        ================================================== */
+
+        if (
+            [
+                "png",
+                "jpg",
+                "jpeg",
+                "gif",
+                "webp",
+                "svg",
+                "bmp"
+            ].includes(extension)
+        ) {
+
+            this.openImageViewer(item);
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           VIDEO FILES
+        ================================================== */
+
+        if (
+            [
+                "mp4",
+                "webm",
+                "ogg",
+                "mov"
+            ].includes(extension)
+        ) {
+
+            this.openVideoViewer(item);
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           AUDIO FILES
+        ================================================== */
+
+        if (
+            [
+                "mp3",
+                "wav",
+                "ogg",
+                "m4a",
+                "aac"
+            ].includes(extension)
+        ) {
+
+            this.openAudioViewer(item);
+
+            return;
+
+        }
+
+
+        /* ==================================================
+           UNSUPPORTED
+        ================================================== */
+
+        alert(
+            `Atlas Files cannot preview "${item.name}".`
+        );
+
+    },
+
+
+    /* ======================================================
+       TEXT EDITOR
+    ====================================================== */
+
+    openTextEditor(item, renderCallback) {
+
+        const safeContent =
+            escapeHTML(
+                item.content || ""
+            );
+
+
+        const editorHTML = `
+
+            <div class="atlas-editor">
+
+                <div class="atlas-editor-toolbar">
+
+                    <span class="atlas-editor-title">
+                        📄 ${escapeHTML(item.name)}
+                    </span>
+
+                    <span
+                        id="atlas-editor-size"
+                        class="atlas-editor-size"
+                    >
+                        ${formatBytes(
+                            new Blob([
+                                item.content || ""
+                            ]).size
+                        )}
+                    </span>
+
+                    <button
+                        id="atlas-editor-save"
+                        class="atlas-editor-btn"
+                    >
+                        💾 Save
+                    </button>
+
+                </div>
+
+
+                <textarea
+                    id="atlas-editor-textarea"
+                    class="atlas-editor-textarea"
+                    spellcheck="false"
+                >${safeContent}</textarea>
+
+
+                <div class="atlas-editor-footer">
+
+                    <span>
+                        Ctrl + S to save
+                    </span>
+
+                    <span
+                        id="atlas-editor-status"
+                    >
+                        Ready
+                    </span>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        const win =
+            WindowManager.open({
+
+                id:
+                    `atlas_editor_${item.id}`,
+
+                title:
+                    `📄 ${item.name}`,
+
+                contentHTML:
+                    editorHTML,
+
+                width:
+                    760,
+
+                height:
+                    560
+
+            });
+
+
+        if (!win) {
+            return;
+        }
+
+
+        const textarea =
+            win.querySelector(
+                "#atlas-editor-textarea"
+            );
+
+        const saveButton =
+            win.querySelector(
+                "#atlas-editor-save"
+            );
+
+        const sizeLabel =
+            win.querySelector(
+                "#atlas-editor-size"
+            );
+
+        const statusLabel =
+            win.querySelector(
+                "#atlas-editor-status"
+            );
+
+
+        if (!textarea) {
+            return;
+        }
+
+
+        /* ==================================================
+           UPDATE SIZE
+        ================================================== */
+
+        textarea.addEventListener(
+            "input",
+            () => {
+
+                const size =
+                    new Blob([
+                        textarea.value
+                    ]).size;
+
+                if (sizeLabel) {
+
+                    sizeLabel.textContent =
+                        formatBytes(size);
+
+                }
+
+                if (statusLabel) {
+
+                    statusLabel.textContent =
+                        "Unsaved changes";
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           SAVE
+        ================================================== */
+
+        const saveFile =
+            async () => {
+
+                item.content =
+                    textarea.value;
+
+                item.size =
+                    new Blob([
+                        item.content
+                    ]).size;
+
+                item.modified =
+                    Date.now();
+
+
+                const saved =
+                    await StorageModule.saveNode(
+                        item
+                    );
+
+
+                if (saved) {
+
+                    if (statusLabel) {
+
+                        statusLabel.textContent =
+                            "✓ Saved";
+
+                    }
+
+                    if (
+                        typeof renderCallback ===
+                        "function"
+                    ) {
+
+                        await renderCallback();
+
+                    }
+
+                } else {
+
+                    if (statusLabel) {
+
+                        statusLabel.textContent =
+                            "Save failed";
+
+                    }
+
+                }
+
+            };
+
+
+        saveButton?.addEventListener(
+            "click",
+            saveFile
+        );
+
+
+        /* ==================================================
+           CTRL + S
+        ================================================== */
+
+        textarea.addEventListener(
+            "keydown",
+            async event => {
+
+                if (
+                    (event.ctrlKey ||
+                     event.metaKey) &&
+                    event.key.toLowerCase() === "s"
+                ) {
+
+                    event.preventDefault();
+
+                    await saveFile();
+
+                }
+
+            }
+        );
+
+
+        textarea.focus();
+
+    },
+
+
+    /* ======================================================
+       IMAGE VIEWER
+    ====================================================== */
+
+    openImageViewer(item) {
+
+        const html = `
+
+            <div class="atlas-image-viewer">
+
+                <div
+                    class="atlas-image-stage"
+                    id="atlas-image-stage"
+                >
+
+                    <img
+                        id="atlas-image"
+                        src="${item.content || ""}"
+                        alt="${escapeHTML(item.name)}"
+                        draggable="false"
+                    >
+
+                </div>
+
+
+                <div class="atlas-media-toolbar">
+
+                    <button id="atlas-img-minus">
+                        −
+                    </button>
+
+                    <span id="atlas-img-zoom">
+                        100%
+                    </span>
+
+                    <button id="atlas-img-plus">
+                        +
+                    </button>
+
+                    <button id="atlas-img-rotate">
+                        ↻ Rotate
+                    </button>
+
+                    <button id="atlas-img-reset">
+                        Reset
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        const win =
+            WindowManager.open({
+
+                id:
+                    `atlas_image_${item.id}`,
+
+                title:
+                    `🖼️ ${item.name}`,
+
+                contentHTML:
+                    html,
+
+                width:
+                    760,
+
+                height:
+                    560
+
+            });
+
+
+        const image =
+            win?.querySelector(
+                "#atlas-image"
+            );
+
+        if (!image) {
+            return;
+        }
+
+
+        let zoom = 1;
+
+        let rotation = 0;
+
+
+        const updateImage =
+            () => {
+
+                image.style.transform =
+                    `
+                    scale(${zoom})
+                    rotate(${rotation}deg)
+                    `;
+
+                const label =
+                    win.querySelector(
+                        "#atlas-img-zoom"
+                    );
+
+                if (label) {
+
+                    label.textContent =
+                        `${Math.round(
+                            zoom * 100
+                        )}%`;
+
+                }
+
+            };
+
+
+        win.querySelector(
+            "#atlas-img-plus"
+        )?.addEventListener(
+            "click",
+            () => {
+
+                zoom =
+                    Math.min(
+                        zoom + 0.25,
+                        5
+                    );
+
+                updateImage();
+
+            }
+        );
+
+
+        win.querySelector(
+            "#atlas-img-minus"
+        )?.addEventListener(
+            "click",
+            () => {
+
+                zoom =
+                    Math.max(
+                        zoom - 0.25,
+                        0.25
+                    );
+
+                updateImage();
+
+            }
+        );
+
+
+        win.querySelector(
+            "#atlas-img-rotate"
+        )?.addEventListener(
+            "click",
+            () => {
+
+                rotation =
+                    (rotation + 90) % 360;
+
+                updateImage();
+
+            }
+        );
+
+
+        win.querySelector(
+            "#atlas-img-reset"
+        )?.addEventListener(
+            "click",
+            () => {
+
+                zoom = 1;
+
+                rotation = 0;
+
+                updateImage();
+
+            }
+        );
+
+
+        const stage =
+            win.querySelector(
+                "#atlas-image-stage"
+            );
+
+
+        stage?.addEventListener(
+            "wheel",
+            event => {
+
+                event.preventDefault();
+
+                if (
+                    event.deltaY < 0
+                ) {
+
+                    zoom =
+                        Math.min(
+                            zoom + 0.1,
+                            5
+                        );
+
+                } else {
+
+                    zoom =
+                        Math.max(
+                            zoom - 0.1,
+                            0.25
+                        );
+
+                }
+
+                updateImage();
+
+            },
+            {
+                passive: false
+            }
+        );
+
+    },
+
+
+    /* ======================================================
+       VIDEO VIEWER
+    ====================================================== */
+
+    openVideoViewer(item) {
+
+        const html = `
+
+            <div class="atlas-video-viewer">
+
+                <video
+                    controls
+                    autoplay
+                    style="
+                        width:100%;
+                        height:100%;
+                        max-height:100%;
+                        object-fit:contain;
+                        background:#000;
+                    "
+                >
+
+                    <source
+                        src="${item.content || ""}"
+                    >
+
+                    Your browser does not support
+                    video playback.
+
+                </video>
+
+            </div>
+
+        `;
+
+
+        WindowManager.open({
+
+            id:
+                `atlas_video_${item.id}`,
+
+            title:
+                `🎬 ${item.name}`,
+
+            contentHTML:
+                html,
+
+            width:
+                820,
+
+            height:
+                560
+
+        });
+
+    },
+
+
+    /* ======================================================
+       AUDIO VIEWER
+    ====================================================== */
+
+    openAudioViewer(item) {
+
+        const html = `
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    height:100%;
+                    flex-direction:column;
+                    gap:25px;
+                    background:#111;
+                    color:#fff;
+                "
+            >
+
+                <div style="font-size:70px;">
+                    🎵
+                </div>
+
+                <strong>
+                    ${escapeHTML(item.name)}
+                </strong>
+
+                <audio
+                    controls
+                    autoplay
+                    style="width:90%;"
+                >
+
+                    <source
+                        src="${item.content || ""}"
+                    >
+
+                    Your browser does not support
+                    audio playback.
+
+                </audio>
+
+            </div>
+
+        `;
+
+
+        WindowManager.open({
+
+            id:
+                `atlas_audio_${item.id}`,
+
+            title:
+                `🎵 ${item.name}`,
+
+            contentHTML:
+                html,
+
+            width:
+                600,
+
+            height:
+                350
+
+        });
+
+    }
+
+};
+
+
+/* ==========================================================
+   44. UTILITY — HTML ESCAPE
+========================================================== */
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ==========================================================
+   45. FORMAT FILE SIZE
+========================================================== */
+
+function formatBytes(bytes) {
+
+    if (!bytes || bytes <= 0) {
+        return "0 B";
+    }
+
+
+    const units = [
+        "B",
+        "KB",
+        "MB",
+        "GB"
+    ];
+
+
+    const index =
+        Math.floor(
+            Math.log(bytes) /
+            Math.log(1024)
+        );
+
+
+    const safeIndex =
+        Math.min(
+            index,
+            units.length - 1
+        );
+
+
+    return (
+        `${(
+            bytes /
+            Math.pow(
+                1024,
+                safeIndex
+            )
+        ).toFixed(
+            safeIndex === 0 ? 0 : 2
+        )} ${units[safeIndex]}`
+    );
+
+}
+
+
+/* ==========================================================
+   46. GLOBAL VIEWER API
+========================================================== */
+
+window.ViewerModule =
+    ViewerModule;
+
+
+/* ==========================================================
+   47. FINAL INITIALIZATION
+========================================================== */
+
+console.log(
+    "✅ Atlas Files Viewer v18 loaded."
+);
+
+
+/* ==========================================================
+   END OF DOMContentLoaded
+========================================================== */
+
+});
                                 
