@@ -2899,4 +2899,293 @@ console.log(
 ========================================================== */
 
 });
+/* ==========================================================
+   ATLAS FILES — VIEWER MODULE v18.1
+   Text / Code Editor + Save
+========================================================== */
+
+const ViewerModule = {
+
+    openFile(item, renderCallback) {
+
+        const ext = item.name.split(".").pop().toLowerCase();
+
+        /* ==========================
+           TEXT / CODE FILES
+        ========================== */
+
+        if (
+            ["txt", "md", "json", "js", "html", "htm", "css"].includes(ext)
+        ) {
+
+            const html = `
+                <div style="
+                    display:flex;
+                    flex-direction:column;
+                    height:100%;
+                    gap:10px;
+                ">
+
+                    <textarea
+                        id="atlas-editor"
+                        spellcheck="false"
+                        style="
+                            flex:1;
+                            width:100%;
+                            box-sizing:border-box;
+                            background:#111;
+                            color:#e6e6e6;
+                            border:1px solid #333;
+                            border-radius:6px;
+                            padding:14px;
+                            font-family:Consolas,Monaco,monospace;
+                            font-size:13px;
+                            line-height:1.5;
+                            resize:none;
+                            outline:none;
+                        "
+                    >${escapeHTML(item.content || "")}</textarea>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                        padding:4px 2px;
+                    ">
+
+                        <span
+                            id="atlas-editor-size"
+                            style="
+                                color:#888;
+                                font-size:11px;
+                            "
+                        >
+                            Size: ${item.size || 0} bytes
+                        </span>
+
+                        <button
+                            id="atlas-editor-save"
+                            style="
+                                background:#007acc;
+                                color:#fff;
+                                border:0;
+                                border-radius:5px;
+                                padding:7px 18px;
+                                cursor:pointer;
+                                font-weight:600;
+                            "
+                        >
+                            💾 Save
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+            const win = WindowManager.open({
+                id: `file_${item.id}`,
+                title: `📄 ${item.name}`,
+                contentHTML: html,
+                width: 760,
+                height: 520
+            });
+
+            const editor = win.querySelector("#atlas-editor");
+            const saveBtn = win.querySelector("#atlas-editor-save");
+            const sizeLabel = win.querySelector("#atlas-editor-size");
+
+            if (!editor) return;
+
+            /* ==========================
+               LIVE SIZE
+            ========================== */
+
+            editor.addEventListener("input", () => {
+
+                const size = new Blob([editor.value]).size;
+
+                if (sizeLabel) {
+                    sizeLabel.textContent = `Size: ${size} bytes`;
+                }
+
+            });
+
+            /* ==========================
+               SAVE
+            ========================== */
+
+            const saveFile = async () => {
+
+                item.content = editor.value;
+
+                item.size = new Blob([
+                    item.content
+                ]).size;
+
+                item.modified = Date.now();
+
+                await StorageModule.saveNode(item);
+
+                if (renderCallback) {
+                    await renderCallback();
+                }
+
+                if (sizeLabel) {
+                    sizeLabel.textContent =
+                        `Size: ${item.size} bytes`;
+                }
+
+                console.log(
+                    `Atlas Files: ${item.name} saved successfully.`
+                );
+
+            };
+
+            saveBtn?.addEventListener(
+                "click",
+                saveFile
+            );
+
+            /* ==========================
+               CTRL + S
+            ========================== */
+
+            editor.addEventListener("keydown", async e => {
+
+                if (
+                    (e.ctrlKey || e.metaKey) &&
+                    e.key.toLowerCase() === "s"
+                ) {
+
+                    e.preventDefault();
+
+                    await saveFile();
+
+                }
+
+            });
+
+            /* ==========================
+               AUTO FOCUS
+            ========================== */
+
+            setTimeout(() => {
+                editor.focus();
+            }, 50);
+
+            return;
+        }
+
+        /* ==========================
+           IMAGE FILES
+        ========================== */
+
+        if (
+            ["png", "jpg", "jpeg", "gif", "webp"].includes(ext)
+        ) {
+
+            const html = `
+                <div style="
+                    width:100%;
+                    height:100%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    background:#111;
+                    overflow:auto;
+                ">
+
+                    <img
+                        src="${item.content || ""}"
+                        style="
+                            max-width:95%;
+                            max-height:95%;
+                            object-fit:contain;
+                        "
+                    >
+
+                </div>
+            `;
+
+            WindowManager.open({
+                id: `file_${item.id}`,
+                title: `🖼️ ${item.name}`,
+                contentHTML: html,
+                width: 720,
+                height: 520
+            });
+
+            return;
+        }
+
+        /* ==========================
+           VIDEO FILES
+        ========================== */
+
+        if (
+            ["mp4", "webm", "ogg"].includes(ext)
+        ) {
+
+            const html = `
+                <div style="
+                    width:100%;
+                    height:100%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    background:#000;
+                ">
+
+                    <video
+                        controls
+                        style="
+                            max-width:100%;
+                            max-height:100%;
+                        "
+                    >
+                        <source
+                            src="${item.content || ""}"
+                        >
+                    </video>
+
+                </div>
+            `;
+
+            WindowManager.open({
+                id: `file_${item.id}`,
+                title: `🎬 ${item.name}`,
+                contentHTML: html,
+                width: 760,
+                height: 520
+            });
+
+            return;
+        }
+
+        console.warn(
+            `Atlas Files: Unsupported file type — ${ext}`
+        );
+    }
+};
+
+
+/* ==========================================================
+   SAFE HTML ESCAPE
+========================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* Global access */
+window.ViewerModule = ViewerModule;
                                 
