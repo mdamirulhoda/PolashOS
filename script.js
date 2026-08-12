@@ -3447,4 +3447,727 @@ window.ViewerModule = ViewerModule;
 
         await atlasCreateFile(name, "");
     };
+    /* ==========================================================
+   ATLAS FILES ENGINE — NEXT INTEGRATED MODULE
+   Part 7–10
+   - Rename
+   - Select All
+   - Delete / Recycle Bin
+   - Restore
+   - Permanent Delete
+   - Empty Recycle Bin
+   - Download
+   - Drag & Drop
+   - Keyboard Shortcuts
+========================================================== */
+
+
+/* ==========================================================
+   RENAME
+========================================================== */
+
+window.atlasRenameSelected = async function () {
+
+    if (selectedItemIds.size !== 1) return;
+
+    const id = Array.from(selectedItemIds)[0];
+    const item = await StorageModule.getNode(id);
+
+    if (!item || item.system) return;
+
+    const newName = prompt("Rename:", item.name);
+
+    if (!newName || !newName.trim()) return;
+
+    item.name = newName.trim();
+    item.modified = Date.now();
+
+    await StorageModule.saveNode(item);
+
+    selectedItemIds.clear();
+
+    await renderFolder();
+};
+
+
+/* ==========================================================
+   SELECT ALL
+========================================================== */
+
+window.atlasSelectAll = async function () {
+
+    const children = await getChildren(currentFolderId);
+
+    selectedItemIds.clear();
+
+    children.forEach(item => {
+        selectedItemIds.add(item.id);
+    });
+
+    await renderFolder();
+};
+
+
+/* ==========================================================
+   DELETE → RECYCLE BIN
+========================================================== */
+
+async function moveSelectedToRecycleBin() {
+
+    if (selectedItemIds.size === 0) return;
+
+    if (currentFolderId === binId) {
+        await permanentlyDeleteSelected();
+        return;
+    }
+
+    for (const id of selectedItemIds) {
+
+        const node = await StorageModule.getNode(id);
+
+        if (!node || node.system) continue;
+
+        node.originalParentId = node.parentId;
+        node.parentId = binId;
+        node.deletedTime = Date.now();
+        node.modified = Date.now();
+
+        await StorageModule.saveNode(node);
+    }
+
+    selectedItemIds.clear();
+
+    await renderFolder();
+}
+
+
+/* ==========================================================
+   PERMANENT DELETE
+========================================================== */
+
+async function permanentlyDeleteSelected() {
+
+    if (selectedItemIds.size === 0) return;
+
+    for (const id of selectedItemIds) {
+
+        const node = await StorageModule.getNode(id);
+
+        if (!node || node.system) continue;
+
+        await StorageModule.deleteNode(id);
+    }
+
+    selectedItemIds.clear();
+
+    await renderFolder();
+}
+
+
+/* ==========================================================
+   RESTORE FROM RECYCLE BIN
+========================================================== */
+
+async function restoreSelected() {
+
+    if (currentFolderId !== binId) return;
+
+    for (const id of selectedItemIds) {
+
+        const node = await StorageModule.getNode(id);
+
+        if (!node) continue;
+
+        node.parentId =
+            node.originalParentId || rootId;
+
+        delete node.originalParentId;
+        delete node.deletedTime;
+
+        node.modified = Date.now();
+
+        await StorageModule.saveNode(node);
+    }
+
+    selectedItemIds.clear();
+
+    await renderFolder();
+}
+
+
+/* ==========================================================
+   EMPTY RECYCLE BIN
+========================================================== */
+
+async function emptyRecycleBin() {
+
+    const items = await getChildren(binId);
+
+    for (const item of items) {
+
+        if (!item.system) {
+
+            await StorageModule.deleteNode(item.id);
+
+        }
+    }
+
+    selectedItemIds.clear();
+
+    await renderFolder();
+}
+
+
+/* ==========================================================
+   DOWNLOAD FILES
+========================================================== */
+
+async function downloadSelected() {
+
+    if (selectedItemIds.size === 0) return;
+
+    for (const id of selectedItemIds) {
+
+        const item = await StorageModule.getNode(id);
+
+        if (!item || item.type !== "file") continue;
+
+        const blob = new Blob(
+            [item.content || ""],
+            {
+                type: "application/octet-stream"
+            }
+        );
+
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = item.name;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 500);
+    }
+}
+
+
+/* ==========================================================
+   DRAG & DROP MOVE
+========================================================== */
+
+filesGrid?.addEventListener("dragstart", e => {
+
+    const itemEl =
+        e.target.closest(".file-item");
+
+    if (!itemEl) return;
+
+    e.dataTransfer.effectAllowed = "move";
+
+    e.dataTransfer.setData(
+        "text/plain",
+        itemEl.dataset.id
+    );
+});
+
+
+filesGrid?.addEventListener("dragover", e => {
+
+    const target =
+        e.target.closest(".file-item");
+
+    if (!target) return;
+
+    e.preventDefault();
+
+    e.dataTransfer.dropEffect = "move";
+
+});
+
+
+filesGrid?.addEventListener("drop", async e => {
+
+    e.preventDefault();
+
+    const targetEl =
+        e.target.closest(".file-item");
+
+    if (!targetEl) return;
+
+    const draggedId =
+        e.dataTransfer.getData("text/plain");
+
+    const targetId =
+        targetEl.dataset.id;
+
+    if (!draggedId || !targetId) return;
+
+    if (draggedId === targetId) return;
+
+    const dragged =
+        await StorageModule.getNode(draggedId);
+
+    const target =
+        await StorageModule.getNode(targetId);
+
+    if (!dragged || !target) return;
+
+    /* Only folders can receive files */
+
+    if (target.type !== "folder") return;
+
+
+    /* Prevent moving folder into itself */
+
+    if (dragged.type === "folder") {
+
+        let parent = target;
+
+        while (parent) {
+
+            if (parent.id === dragged.id) {
+                return;
+            }
+
+            if (!parent.parentId) break;
+
+            parent =
+                await StorageModule.getNode(
+                    parent.parentId
+                );
+        }
+    }
+
+
+    dragged.parentId = target.id;
+    dragged.modified = Date.now();
+
+    await StorageModule.saveNode(dragged);
+
+    selectedItemIds.clear();
+
+    await renderFolder();
+});
+
+
+/* ==========================================================
+   CONTEXT MENU
+========================================================== */
+
+function hideContextMenu() {
+
+    if (!contextMenu) return;
+
+    contextMenu.style.display = "none";
+}
+
+
+filesGrid?.addEventListener(
+    "contextmenu",
+    async e => {
+
+        e.preventDefault();
+
+        const itemEl =
+            e.target.closest(".file-item");
+
+        if (itemEl) {
+
+            const id =
+                itemEl.dataset.id;
+
+            if (!selectedItemIds.has(id)) {
+
+                selectedItemIds.clear();
+
+                selectedItemIds.add(id);
+
+                await renderFolder();
+            }
+        }
+
+        if (!contextMenu) return;
+
+        contextMenu.style.display = "block";
+
+        contextMenu.style.position = "fixed";
+
+        contextMenu.style.left =
+            `${e.clientX}px`;
+
+        contextMenu.style.top =
+            `${e.clientY}px`;
+
+        contextMenu.style.zIndex =
+            "999999";
+    }
+);
+
+
+document.addEventListener("click", e => {
+
+    if (
+        contextMenu &&
+        !contextMenu.contains(e.target)
+    ) {
+
+        hideContextMenu();
+
+    }
+});
+
+
+/* ==========================================================
+   CONTEXT MENU ACTIONS
+========================================================== */
+
+contextMenu?.addEventListener(
+    "click",
+    async e => {
+
+        const actionEl =
+            e.target.closest("[data-action]");
+
+        if (!actionEl) return;
+
+        const action =
+            actionEl.dataset.action;
+
+        hideContextMenu();
+
+
+        switch (action) {
+
+            case "open": {
+
+                if (selectedItemIds.size !== 1)
+                    return;
+
+                const id =
+                    Array.from(
+                        selectedItemIds
+                    )[0];
+
+                const item =
+                    await StorageModule.getNode(id);
+
+                if (!item) return;
+
+                if (item.type === "folder") {
+
+                    currentFolderId =
+                        item.id;
+
+                    selectedItemIds.clear();
+
+                    await renderFolder();
+
+                } else {
+
+                    ViewerModule.openFile(
+                        item,
+                        renderFolder
+                    );
+                }
+
+                break;
+            }
+
+
+            case "copy":
+
+                await copySelected();
+
+                break;
+
+
+            case "cut":
+
+                await cutSelected();
+
+                break;
+
+
+            case "paste":
+
+                await pasteClipboard();
+
+                break;
+
+
+            case "rename":
+
+                await atlasRenameSelected();
+
+                break;
+
+
+            case "delete":
+
+                await moveSelectedToRecycleBin();
+
+                break;
+
+
+            case "restore":
+
+                await restoreSelected();
+
+                break;
+
+
+            case "download":
+
+                await downloadSelected();
+
+                break;
+
+
+            case "empty-bin":
+
+                if (currentFolderId === binId) {
+
+                    if (
+                        confirm(
+                            "Empty Recycle Bin permanently?"
+                        )
+                    ) {
+
+                        await emptyRecycleBin();
+
+                    }
+                }
+
+                break;
+
+
+            case "undo":
+
+                await HistoryEngine.undo();
+
+                break;
+
+
+            case "redo":
+
+                await HistoryEngine.redo();
+
+                break;
+
+        }
+
+    }
+);
+
+
+/* ==========================================================
+   KEYBOARD SHORTCUTS
+========================================================== */
+
+document.addEventListener(
+    "keydown",
+    async e => {
+
+        const tag =
+            e.target?.tagName;
+
+        if (
+            tag === "INPUT" ||
+            tag === "TEXTAREA" ||
+            tag === "SELECT"
+        ) {
+            return;
+        }
+
+
+        const ctrl =
+            e.ctrlKey || e.metaKey;
+
+
+        /* Ctrl + A */
+
+        if (
+            ctrl &&
+            e.key.toLowerCase() === "a"
+        ) {
+
+            e.preventDefault();
+
+            await atlasSelectAll();
+
+            return;
+        }
+
+
+        /* Ctrl + C */
+
+        if (
+            ctrl &&
+            e.key.toLowerCase() === "c"
+        ) {
+
+            e.preventDefault();
+
+            await copySelected();
+
+            return;
+        }
+
+
+        /* Ctrl + X */
+
+        if (
+            ctrl &&
+            e.key.toLowerCase() === "x"
+        ) {
+
+            e.preventDefault();
+
+            await cutSelected();
+
+            return;
+        }
+
+
+        /* Ctrl + V */
+
+        if (
+            ctrl &&
+            e.key.toLowerCase() === "v"
+        ) {
+
+            e.preventDefault();
+
+            await pasteClipboard();
+
+            return;
+        }
+
+
+        /* Ctrl + Z */
+
+        if (
+            ctrl &&
+            e.key.toLowerCase() === "z"
+        ) {
+
+            e.preventDefault();
+
+            await HistoryEngine.undo();
+
+            return;
+        }
+
+
+        /* Ctrl + Y */
+
+        if (
+            ctrl &&
+            e.key.toLowerCase() === "y"
+        ) {
+
+            e.preventDefault();
+
+            await HistoryEngine.redo();
+
+            return;
+        }
+
+
+        /* F2 Rename */
+
+        if (e.key === "F2") {
+
+            e.preventDefault();
+
+            await atlasRenameSelected();
+
+            return;
+        }
+
+
+        /* Delete */
+
+        if (e.key === "Delete") {
+
+            e.preventDefault();
+
+            await moveSelectedToRecycleBin();
+
+            return;
+        }
+
+
+        /* Enter */
+
+        if (
+            e.key === "Enter" &&
+            selectedItemIds.size === 1
+        ) {
+
+            const id =
+                Array.from(
+                    selectedItemIds
+                )[0];
+
+            const item =
+                await StorageModule.getNode(id);
+
+            if (!item) return;
+
+            if (item.type === "folder") {
+
+                currentFolderId =
+                    item.id;
+
+                selectedItemIds.clear();
+
+                await renderFolder();
+
+            } else {
+
+                ViewerModule.openFile(
+                    item,
+                    renderFolder
+                );
+            }
+
+            return;
+        }
+
+
+        /* Escape */
+
+        if (e.key === "Escape") {
+
+            selectedItemIds.clear();
+
+            hideContextMenu();
+
+            await renderFolder();
+
+            return;
+        }
+
+    }
+);
+
+
+/* ==========================================================
+   INITIAL ATLAS FILES RENDER
+========================================================== */
+
+await renderFolder();
+
+console.log(
+    "Atlas Files Engine — Integrated Module Loaded"
+);
                                 
