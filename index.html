@@ -240,11 +240,24 @@
 
         </div>
 
-        <div class="polash-content window-content">
+        <div class="polash-content window-content files-app-container" style="display:flex; height:100%; overflow:hidden;">
+            
+            <!-- Sidebar -->
+            <div class="files-sidebar" style="width: 180px; background: rgba(0,0,0,0.2); border-right: 1px solid rgba(255,255,255,0.05); padding: 10px;">
+                <ul class="sidebar-menu" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:5px;">
+                    <!-- JS will render sidebar items here -->
+                </ul>
+            </div>
 
-            <h2>Atlas Files</h2>
-
-            <p>File Manager coming soon...</p>
+            <!-- Main File Area -->
+            <div class="files-main" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+                <div class="files-toolbar" style="padding: 8px 12px; background: rgba(0,0,0,0.1); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <div class="files-path" style="font-size: 12px; color: #aaa;">Home</div>
+                </div>
+                <div id="files-grid" class="files-grid" style="flex:1; padding: 15px; display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; align-content:start; overflow-y:auto;">
+                    <!-- JS will render folder items here -->
+                </div>
+            </div>
 
         </div>
 
@@ -380,5 +393,5 @@
 
 </body>
 
-            </html>
-            
+    </html>
+    
