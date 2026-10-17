@@ -4170,4 +4170,29 @@ await renderFolder();
 console.log(
     "Atlas Files Engine — Integrated Module Loaded"
 );
-                                
+                            <button
+                                id="atlas-editor-save"
+                                style="
+                                    background: #4f8cff;
+                                    color: #fff;
+                                    border: none;
+                                    padding: 6px 14px;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    font-size: 12px;
+                                "
+                            >Save</button>
+                        </div>
+                    </div>
+                `;
+                
+                // ফাইলের কন্টেন্ট বা এডিটর ওপেন করার লগিক এখানে যুক্ত করা হয়েছে
+                console.log("Opening file in editor:", item.name);
+            }
+        }
+    };
+
+    window.ViewerModule = ViewerModule;
+
+});
+
